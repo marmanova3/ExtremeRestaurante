@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="pxisnitl@dumbo.db.elephantsql.com" uuid="2961d933-836b-451a-907a-3201c22dc223">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://dumbo.db.elephantsql.com:5432/pxisnitl</jdbc-url>
+    </data-source>
+  </component>
+</project>

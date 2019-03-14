@@ -10,6 +10,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import model.TablesEntity;
+import org.hibernate.Session;
+import utils.HibernateUtil;
 
 public class Main extends Application {
     public Main() {
@@ -20,6 +23,14 @@ public class Main extends Application {
     }
 
     public void start(Stage primaryStage) throws Exception {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        TablesEntity table = new TablesEntity();
+        table.setName("1");
+        session.save(table);
+        session.getTransaction().commit();
+        System.out.println("Done");
+
 
         Parent root = (Parent) FXMLLoader.load(this.getClass().getResource("window.fxml"));
         primaryStage.setTitle("Hello World");

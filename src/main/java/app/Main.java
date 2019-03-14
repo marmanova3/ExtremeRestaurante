@@ -3,7 +3,7 @@
 // (powered by Fernflower decompiler)
 //
 
-package sample;
+package app;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -20,8 +20,7 @@ public class Main extends Application {
     }
 
     public void start(Stage primaryStage) throws Exception {
-        System.out.println(this.getClass().getResource("sample.fxml"));
-        Parent root = (Parent) FXMLLoader.load(this.getClass().getResource("sample.fxml"));
+        Parent root = (Parent) FXMLLoader.load(this.getClass().getResource("window.fxml"));
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root, 300.0D, 275.0D));
         primaryStage.show();

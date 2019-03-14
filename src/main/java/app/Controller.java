@@ -3,7 +3,7 @@
 // (powered by Fernflower decompiler)
 //
 
-package sample;
+package app;
 
 public class Controller {
     public Controller() {

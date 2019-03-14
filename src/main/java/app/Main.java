@@ -20,6 +20,7 @@ public class Main extends Application {
     }
 
     public void start(Stage primaryStage) throws Exception {
+
         Parent root = (Parent) FXMLLoader.load(this.getClass().getResource("window.fxml"));
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root, 300.0D, 275.0D));

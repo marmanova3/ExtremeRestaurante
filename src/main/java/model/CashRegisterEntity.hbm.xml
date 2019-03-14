@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="model.CashRegisterEntity" table="cash_register" schema="public" catalog="pxisnitl">
+        <id name="id">
+            <column name="id" sql-type="integer"/>
+        </id>
+        <property name="cashStatus">
+            <column name="cash_status" sql-type="double precision" precision="-1" not-null="true"/>
+        </property>
+    </class>
+</hibernate-mapping>

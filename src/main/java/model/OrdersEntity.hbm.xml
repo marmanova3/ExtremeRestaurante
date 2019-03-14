@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="model.OrdersEntity" table="orders" schema="public" catalog="pxisnitl">
+        <id name="id">
+            <column name="id" sql-type="integer"/>
+        </id>
+        <property name="price">
+            <column name="price" sql-type="double precision" precision="-1" not-null="true"/>
+        </property>
+        <property name="paid">
+            <column name="paid" sql-type="boolean" not-null="true"/>
+        </property>
+    </class>
+</hibernate-mapping>

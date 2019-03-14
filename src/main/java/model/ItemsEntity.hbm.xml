@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="model.ItemsEntity" table="items" schema="public" catalog="pxisnitl">
+        <id name="id">
+            <column name="id" sql-type="integer"/>
+        </id>
+        <property name="name">
+            <column name="name" sql-type="varchar(100)" length="100" not-null="true"/>
+        </property>
+        <property name="price">
+            <column name="price" sql-type="double precision" precision="-1" not-null="true"/>
+        </property>
+        <property name="image">
+            <column name="image" sql-type="varchar(100)" length="100" not-null="true"/>
+        </property>
+        <property name="softDelete">
+            <column name="soft_delete" sql-type="boolean" not-null="true"/>
+        </property>
+    </class>
+</hibernate-mapping>

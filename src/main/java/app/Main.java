@@ -29,6 +29,7 @@ public class Main extends Application {
         table.setName("1");
         session.save(table);
         session.getTransaction().commit();
+        session.close();
         System.out.println("Done");
 
 

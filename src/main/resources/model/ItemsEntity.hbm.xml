@@ -7,6 +7,7 @@
     <class name="model.ItemsEntity" table="items" schema="public" catalog="pxisnitl">
         <id name="id">
             <column name="id" sql-type="integer"/>
+            <generator class="identity"/>
         </id>
         <property name="name">
             <column name="name" sql-type="varchar(100)" length="100" not-null="true"/>
@@ -20,5 +21,6 @@
         <property name="softDelete">
             <column name="soft_delete" sql-type="boolean" not-null="true"/>
         </property>
+        <many-to-one name="category" column="category" class="model.CategoriesEntity" not-null="true"/>
     </class>
 </hibernate-mapping>

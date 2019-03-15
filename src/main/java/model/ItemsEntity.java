@@ -10,8 +10,21 @@ public class ItemsEntity {
     private Double price;
     private String image;
     private Boolean softDelete;
+    private CategoriesEntity category;
+
+    public ItemsEntity() {
+    }
+
+    public ItemsEntity(String name, Double price, CategoriesEntity category) {
+        this.name = name;
+        this.price = price;
+        this.category = category;
+        this.image = "";
+        this.softDelete = false;
+    }
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     public int getId() {
         return id;
@@ -22,7 +35,7 @@ public class ItemsEntity {
     }
 
     @Basic
-    @Column(name = "name", nullable = true, length = 100)
+    @Column(name = "name", nullable = false, length = 100)
     public String getName() {
         return name;
     }
@@ -32,7 +45,7 @@ public class ItemsEntity {
     }
 
     @Basic
-    @Column(name = "price", nullable = true, precision = 0)
+    @Column(name = "price", nullable = false, precision = 0)
     public Double getPrice() {
         return price;
     }
@@ -59,6 +72,15 @@ public class ItemsEntity {
 
     public void setSoftDelete(Boolean softDelete) {
         this.softDelete = softDelete;
+    }
+
+    @ManyToOne
+    public CategoriesEntity getCategory() {
+        return this.category;
+    }
+
+    public void setCategory(CategoriesEntity category) {
+        this.category = category;
     }
 
     @Override

@@ -8,8 +8,11 @@ public class OrdersEntity {
     private int id;
     private Double price;
     private Boolean paid;
+    private ItemsEntity item;
+    private TablesEntity table;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     public int getId() {
         return id;
@@ -37,6 +40,24 @@ public class OrdersEntity {
 
     public void setPaid(Boolean paid) {
         this.paid = paid;
+    }
+
+    @ManyToOne
+    public TablesEntity getTable() {
+        return this.table;
+    }
+
+    public void setTable(TablesEntity table) {
+        this.table = table;
+    }
+
+    @ManyToOne
+    public ItemsEntity getItem() {
+        return this.item;
+    }
+
+    public void setItem(ItemsEntity item) {
+        this.item = item;
     }
 
     @Override

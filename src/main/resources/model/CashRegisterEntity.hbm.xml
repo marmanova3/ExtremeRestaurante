@@ -7,6 +7,7 @@
     <class name="model.CashRegisterEntity" table="cash_register" schema="public" catalog="pxisnitl">
         <id name="id">
             <column name="id" sql-type="integer"/>
+            <generator class="identity"/>
         </id>
         <property name="cashStatus">
             <column name="cash_status" sql-type="double precision" precision="-1" not-null="true"/>

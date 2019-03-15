@@ -4712,11 +4712,11 @@
       <IntrospectionStateNumber>11513644</IntrospectionStateNumber>
       <Current>1</Current>
       <Visible>1</Visible>
-      <Relations>sequence|table|5315496|5315498|1
+      <Relations>sequence|table|5316210|5316212|1
+sequence|table|5316223|5316225|1
 sequence|table|5316194|5316196|1
 sequence|table|5316202|5316204|1
-sequence|table|5316210|5316212|1
-sequence|table|5316223|5316225|1
+sequence|table|5315496|5315498|1
 </Relations>
     </database>
     <database id="943" parent="1" name="pxyakdpm">

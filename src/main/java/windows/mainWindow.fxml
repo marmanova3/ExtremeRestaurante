@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="829.0" prefWidth="1319.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <HBox prefHeight="123.0" prefWidth="1280.0" style="-fx-background-color: #212121;" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="145.0" fitWidth="340.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@assets/logo.png" />
+               </image>
+               <HBox.margin>
+                  <Insets left="20.0" top="20.0" />
+               </HBox.margin>
+            </ImageView>
+            <Label alignment="CENTER_RIGHT" prefHeight="37.0" prefWidth="1339.0" text="1.1.2019 0:00:00" textFill="WHITE">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+               <padding>
+                  <Insets right="20.0" />
+               </padding>
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+         </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </HBox>
+   </top>
+   <center>
+      <Pane prefHeight="664.0" prefWidth="1280.0" style="-fx-background-color: #212121;" BorderPane.alignment="CENTER">
+         <children>
+            <Button layoutX="971.0" layoutY="576.0" mnemonicParsing="false" style="-fx-background-image: url('assets/cashRegister.png');" text="Cash register">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Button>
+            <Circle fill="DODGERBLUE" layoutX="213.0" layoutY="170.0" radius="78.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: #e1901e;" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="120.0" layoutX="113.0" layoutY="285.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: #288e28;" width="200.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="120.0" layoutX="113.0" layoutY="456.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: #288e28;" width="200.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="120.0" layoutX="385.0" layoutY="110.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: #e1901e;" width="200.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="120.0" layoutX="660.0" layoutY="110.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: #e1901e;" width="200.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="120.0" layoutX="385.0" layoutY="456.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: #e1901e;" width="282.0" />
+            <Label layoutX="200.0" layoutY="135.0" text="1">
+               <font>
+                  <Font size="48.0" />
+               </font>
+            </Label>
+            <Label layoutX="472.0" layoutY="135.0" text="2">
+               <font>
+                  <Font size="48.0" />
+               </font>
+            </Label>
+            <Label layoutX="747.0" layoutY="135.0" text="3">
+               <font>
+                  <Font size="48.0" />
+               </font>
+            </Label>
+            <Label layoutX="200.0" layoutY="310.0" text="4">
+               <font>
+                  <Font size="48.0" />
+               </font>
+            </Label>
+            <Label layoutX="200.0" layoutY="481.0" text="5">
+               <font>
+                  <Font size="48.0" />
+               </font>
+            </Label>
+            <Label layoutX="513.0" layoutY="481.0" text="6">
+               <font>
+                  <Font size="48.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+   </center>
+   <left>
+      <Pane prefHeight="664.0" prefWidth="140.0" style="-fx-background-color: #212121;" BorderPane.alignment="CENTER" />
+   </left>
+</BorderPane>

@@ -49,9 +49,10 @@ public class Main extends Application {
         System.out.println("Done");
 
 
-        Parent root = (Parent) FXMLLoader.load(this.getClass().getResource("window.fxml"));
-        primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 300.0D, 275.0D));
+        Parent root = (Parent) FXMLLoader.load(this.getClass().getResource("../windows/mainWindow.fxml"));
+        primaryStage.setTitle("Extreme Restaurante");
+        primaryStage.setScene(new Scene(root));
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 }

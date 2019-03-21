@@ -8,7 +8,8 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-            minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171">
+            minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171"
+            fx:controller="app.Controller">
    <top>
       <HBox prefHeight="123.0" prefWidth="1280.0" style="-fx-background-color: #212121;" BorderPane.alignment="CENTER">
          <children>
@@ -41,8 +42,8 @@
    <bottom>
       <Pane prefHeight="664.0" prefWidth="1280.0" style="-fx-background-color: #212121;" BorderPane.alignment="CENTER">
          <children>
-            <Button layoutX="695.0" layoutY="403.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="157.0"
-                    style="-fx-background-image: url('assets/cashRegister.png');" text="Cash register">
+            <Button fx:id="myButton" layoutX="695.0" layoutY="403.0" mnemonicParsing="false"
+                    onMouseClicked="#handleButtonAction" prefHeight="39.0" prefWidth="157.0" text="Cash register">
                <font>
                   <Font size="18.0"/>
                </font>

@@ -15,6 +15,7 @@ import utils.HibernateUtil;
 
 public class Main extends Application {
     public static Stage mainStage;
+
     public Main() {
     }
 
@@ -73,4 +74,9 @@ public class Main extends Application {
         primaryStage.setResizable(false);
         primaryStage.show();
     }
+
+    public Stage getPrimaryStage() {
+        return mainStage;
+    }
+
 }

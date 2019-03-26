@@ -12,7 +12,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import model.ItemsEntity;
 import model.OrderItemEntity;
 import model.OrdersEntity;
@@ -21,15 +23,17 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 import utils.HibernateUtil;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class TableWindowController implements Initializable {
+public class TableWindowController extends AbstractController implements Initializable {
 
     private int tableId;
+    private double total;
     private List<OrdersEntity> orders;
 
     @FXML
@@ -87,6 +91,7 @@ public class TableWindowController implements Initializable {
             orders.add(oe);
             total += oe.getPrice();
         }
+        this.total = total;
         tableview.setItems(data);
 
         priceTotal.setText(String.valueOf(total) + " €");
@@ -106,20 +111,26 @@ public class TableWindowController implements Initializable {
 
     @FXML
     private void payAll() throws Exception {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
+        showPopupWindow();
 
-        for (OrdersEntity order : orders) {
-            order.setPaid(true);
-            session.update(order);
-            session.save(order);
-        }
+//        TOTO SA TERAZ ROBI V POP UP WINDOW - ak to bude OK, tak vymazat
 
-        //TO DO update cash_register +priceTotal
-        session.flush();
-        session.getTransaction().commit();
-        session.close();
 
+//        Session session = HibernateUtil.getSessionFactory().openSession();
+//        session.beginTransaction();
+//
+//        for (OrdersEntity order : orders) {
+//            order.setPaid(true);
+//            session.update(order);
+//            session.save(order);
+//        }
+//
+//        //TO DO update cash_register +priceTotal
+//        session.flush();
+//        session.getTransaction().commit();
+//        session.close();
+
+        //TO DO update cash_register + priceTotal ... toto este nie je!!!
         reload();
     }
 
@@ -166,5 +177,30 @@ public class TableWindowController implements Initializable {
         Stage stage = Main.mainStage;
         stage.setScene(new Scene(root));
         stage.show();
+    }
+
+    private void showPopupWindow() throws Exception {
+
+//    private HashMap<String, Object> showPopupWindow() {
+//        HashMap<Stringng, Object> resultMap = new HashMap<String, Object>();
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/windows/popUpWindow.fxml"));
+        Parent root = (Parent) loader.load();
+        PopUpController popupController = loader.getController();
+
+        Scene scene = new Scene(root);
+        Stage popupStage = new Stage();
+        popupStage.initStyle(StageStyle.UNDECORATED);
+        if(this.main!=null) {
+            popupStage.initOwner(main.getPrimaryStage());
+        }
+        popupController.setStage(popupStage);
+        popupController.setPriceToPay(this.total);
+        popupController.setOrders(this.orders);
+        popupStage.initModality(Modality.WINDOW_MODAL);
+        popupStage.setScene(scene);
+        popupStage.showAndWait();
+
+//        return popupController.getResult();
     }
 }

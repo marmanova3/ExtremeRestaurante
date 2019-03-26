@@ -10,6 +10,7 @@ public class OrdersEntity {
     private Boolean paid;
     private ItemsEntity item;
     private TablesEntity table;
+    private String name;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,13 +52,21 @@ public class OrdersEntity {
         this.table = table;
     }
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     public ItemsEntity getItem() {
         return this.item;
     }
 
     public void setItem(ItemsEntity item) {
         this.item = item;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

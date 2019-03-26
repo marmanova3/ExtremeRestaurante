@@ -16,6 +16,6 @@
             <column name="paid" sql-type="boolean" not-null="true"/>
         </property>
         <many-to-one name="table" column="table_id" class="model.TablesEntity" not-null="true"/>
-        <many-to-one name="item" column="item" class="model.ItemsEntity" not-null="true"/>
+        <many-to-one cascade="all" name="item" column="item" class="model.ItemsEntity" not-null="true"/>
     </class>
 </hibernate-mapping>

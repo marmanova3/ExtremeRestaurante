@@ -1,27 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.Line?>
-<?import javafx.scene.text.Font?>
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller">
+<?import javafx.scene.text.*?>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+            minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171"
+            fx:controller="controller.TableWindowController">
     <top>
         <HBox prefHeight="58.0" prefWidth="900.0" style="-fx-background-color: #212121;" BorderPane.alignment="CENTER">
             <children>
-            <ImageView fitHeight="40.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" rotate="180.0">
+                <ImageView fitHeight="40.0" fitWidth="50.0" onMouseClicked="#handleBackAction" pickOnBounds="true"
+                           preserveRatio="true" rotate="180.0">
                <image>
                   <Image url="@assets/left_arrow.png" />
                </image>
@@ -29,7 +23,8 @@
                   <Insets left="10.0" top="10.0" />
                </HBox.margin>
             </ImageView>
-                <Label alignment="CENTER_RIGHT" prefHeight="58.0" prefWidth="859.0" text="TABLE 4" textFill="WHITE">
+                <Label fx:id="tableLabel" alignment="CENTER_RIGHT" prefHeight="58.0" prefWidth="859.0" text="TABLE 4"
+                       textFill="WHITE">
                     <HBox.margin>
                         <Insets />
                     </HBox.margin>
@@ -159,15 +154,40 @@
                         </GridPane>
                      </children>
                   </VBox>
+                   <TableView fx:id="tableview" layoutX="202.0" layoutY="-6.0" prefHeight="517.0" prefWidth="568.0"
+                              style="-fx-background-color: #212121;">
+                       <columns>
+                           <!--<TableColumn fx:id="col1" prefWidth="75.0" text="Id">-->
+                           <!--<cellValueFactory><PropertyValueFactory property="id" /></cellValueFactory>-->
+                           <!--</TableColumn>-->
+                           <TableColumn fx:id="col1" prefWidth="211.0" text="Name">
+                               <cellValueFactory>
+                                   <PropertyValueFactory property="name"/>
+                               </cellValueFactory>
+                           </TableColumn>
+                           <TableColumn fx:id="col2" minWidth="7.0" prefWidth="82.0" text="Price">
+                               <cellValueFactory>
+                                   <PropertyValueFactory property="price"/>
+                               </cellValueFactory>
+                           </TableColumn>
+                           <TableColumn fx:id="col3" prefWidth="71.0" text="Qty">
+                               <cellValueFactory>
+                                   <PropertyValueFactory property="soft_delete"/>
+                               </cellValueFactory>
+                           </TableColumn>
+                       </columns>
+                   </TableView>
                </content>
             </ScrollPane>
             <Line endX="162.0" layoutX="722.0" layoutY="2.0" startX="-100.0" stroke="WHITE" strokeWidth="2.0" />
-            <Button layoutX="620.0" layoutY="472.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="80.0" text="Print">
+             <Button fx:id="item1" layoutX="620.0" layoutY="472.0" mnemonicParsing="false"
+                     onMouseClicked="#addItemToOrders" prefHeight="46.0" prefWidth="80.0" text="Print">
                <font>
                   <Font size="18.0" />
                </font>
             </Button>
-            <Button layoutX="713.0" layoutY="472.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="80.0" text="Pay all">
+             <Button layoutX="713.0" layoutY="472.0" mnemonicParsing="false" onMouseClicked="#payAll" prefHeight="46.0"
+                     prefWidth="80.0" text="Pay all">
                <font>
                   <Font size="18.0" />
                </font>
@@ -184,7 +204,8 @@
                         <Font size="36.0" />
                      </font>
                   </Label>
-                  <Label alignment="CENTER_RIGHT" prefHeight="53.0" prefWidth="149.0" text="9 € " textFill="#ff6730">
+                   <Label fx:id="priceTotal" alignment="CENTER_RIGHT" prefHeight="53.0" prefWidth="149.0" text="9 € "
+                          textFill="#ff6730">
                      <font>
                         <Font size="36.0" />
                      </font>
@@ -192,7 +213,9 @@
                </children>
             </HBox>
             <Line endX="162.0" layoutX="722.0" layoutY="363.0" startX="-100.0" stroke="WHITE" strokeWidth="2.0" />
-            <Button layoutX="703.0" layoutY="21.0" mnemonicParsing="false" prefHeight="57.0" prefWidth="181.0" style="-fx-background-color: #288e28;" text="+ Add items" textFill="WHITE">
+             <Button layoutX="703.0" layoutY="21.0" mnemonicParsing="false" onMouseClicked="#handleMenuAction"
+                     prefHeight="57.0" prefWidth="181.0" style="-fx-background-color: #288e28;" text="+ Add items"
+                     textFill="WHITE">
                <font>
                   <Font size="18.0" />
                </font>

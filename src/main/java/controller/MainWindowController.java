@@ -4,6 +4,7 @@ import app.Main;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -32,7 +33,7 @@ public class MainWindowController implements Initializable {
 
     @FXML
     private void handleTableClickAction(MouseEvent event) throws Exception {
-        Shape table = (Shape) event.getSource();
+        Group table = (Group) event.getSource();
 
         clickedTable = table.getId();
 

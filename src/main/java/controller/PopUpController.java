@@ -24,11 +24,11 @@ public class PopUpController  extends AbstractController implements Initializabl
 
     @FXML private Button confirmBtn, cancelBtn;
     @FXML private TextField cashInput;
-    @FXML private Label outlayOutput, message;
+    @FXML private Label outlayOutput, message, tableNumber;
     private Stage stage;
     private double priceToPay;
     private List<OrdersEntity> orders;
-    private HashMap<String, Object> result = new HashMap<String, Object>();
+    private int tableId;
 
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -40,26 +40,21 @@ public class PopUpController  extends AbstractController implements Initializabl
             }
         });
 
-        // force the field to be numeric only
-        // TODO: upravit aby bralo aj desatinne, teraz berie iba cele :(
         cashInput.textProperty().addListener(new ChangeListener<String>() {
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                String newValue) {
-                if (!newValue.matches("\\d*")) {
-                    cashInput.setText(newValue.replaceAll("[^\\d]", ""));
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d{0,7}([\\.]\\d{0,4})?")) {
+                    cashInput.setText(oldValue);
                 }
             }
         });
     }
 
     /**
-     * setting the stage of this view
+     * sets the stage of this view
      * @param stage
      */
     public void setStage(Stage stage) {
         this.stage = stage;
-        System.out.println("nastavujem stage");
-        System.out.println("stage is " + this.stage);
     }
 
     /**
@@ -71,9 +66,12 @@ public class PopUpController  extends AbstractController implements Initializabl
         }
     }
 
-    /**
-     * Sets the price
-     */
+    public void setTableId(int tableId){
+        this.tableId = tableId;
+        tableNumber.setText("TABLE " + (tableId + 1));
+    }
+
+
     public void setPriceToPay(double priceToPay){
         this.priceToPay = priceToPay;
     }
@@ -140,7 +138,7 @@ public class PopUpController  extends AbstractController implements Initializabl
             session.save(order);
         }
 
-        // returns successfull if payment was successful
+        // returns true if payment was successful
         boolean successful = false;
         try {
             session.flush();

@@ -57,7 +57,7 @@ public class TableWindowController extends AbstractController implements Initial
     public void initTable() {
         String id = MainWindowController.clickedTable;
         tableId = Character.getNumericValue(id.charAt(id.length() - 1)) - 1;
-        tableLabel.setText("Table " + (tableId + 1));
+        tableLabel.setText("TABLE " + (tableId + 1));
     }
 
     public void initialize(URL location, ResourceBundle resources) {
@@ -197,6 +197,7 @@ public class TableWindowController extends AbstractController implements Initial
         popupController.setStage(popupStage);
         popupController.setPriceToPay(this.total);
         popupController.setOrders(this.orders);
+        popupController.setTableId(tableId);
         popupStage.initModality(Modality.WINDOW_MODAL);
         popupStage.setScene(scene);
         popupStage.showAndWait();

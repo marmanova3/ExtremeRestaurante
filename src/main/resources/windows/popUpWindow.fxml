@@ -20,19 +20,11 @@
 <!--prefHeight="400.0" prefWidth="600.0">-->
 <!--</AnchorPane>-->
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #333333;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PopUpController">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #333333; -fx-border-color: #e1901e; -fx-border-width: 5;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PopUpController">
 <children>
     <HBox alignment="CENTER" prefHeight="40.0" prefWidth="372.0" style="-fx-background-color: #000;">
         <children>
-            <Label text="TABLE" textFill="WHITE">
-                <font>
-                    <Font size="24.0" />
-                </font>
-               <HBox.margin>
-                  <Insets right="10.0" />
-               </HBox.margin>
-            </Label>
-            <Label fx:id="tableNumber" layoutX="165.0" layoutY="20.0" text="4" textFill="WHITE">
+            <Label fx:id="tableNumber" layoutX="165.0" layoutY="20.0" text="table" textFill="WHITE">
                <font>
                   <Font size="24.0" />
                </font>

@@ -1,43 +1,31 @@
 package controller;
 
-import app.Main;
+import app.Scenes;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
-import javafx.stage.Stage;
 import javafx.util.Duration;
-import model.OrdersEntity;
-import model.TablesEntity;
-import org.hibernate.Session;
-import org.hibernate.query.Query;
-import sun.security.x509.FreshestCRLExtension;
 import utils.HibernateQueries;
-import utils.HibernateUtil;
 
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.List;
+import java.util.ResourceBundle;
 
 
-public class MainWindowController implements Initializable {
+public class MainWindowController extends AbstractController {
 
     @FXML
     private Label dateTime;
@@ -58,12 +46,7 @@ public class MainWindowController implements Initializable {
 
         clickedTable = table.getId();
 
-        FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/windows/tableWindow.fxml"));
-        Parent root = (Parent) loader.load();
-
-        Stage stage = Main.mainStage;
-        stage.setScene(new Scene(root));
-        stage.show();
+        redirect(Scenes.TABLE_WINDOW);
 
         System.out.println(table.getId() + " was clicked.");
     }
@@ -87,7 +70,9 @@ public class MainWindowController implements Initializable {
     }
 
     private String parseGroupName(String groupId){
-        return groupId.substring(3);
+        System.out.println("id=" + groupId);
+        String a = groupId.substring(3);
+        return a;
     }
 
     private void setRectangleTableColor(Rectangle rectangle, String tableName){
@@ -111,9 +96,9 @@ public class MainWindowController implements Initializable {
         Node tableShape = tableGroup.getChildren().get(0);
         if (tableShape != null) {
             if (tableShape instanceof Rectangle) {
-                setRectangleTableColor((Rectangle) tableShape, parseGroupName(tableGroup.getId()));
+                setRectangleTableColor((Rectangle) tableShape, tableGroup.getId());
             } else if (tableShape instanceof Circle) {
-                setCircleTableColor((Circle) tableShape, parseGroupName(tableGroup.getId()));
+                setCircleTableColor((Circle) tableShape, tableGroup.getId());
             }
         }
     }

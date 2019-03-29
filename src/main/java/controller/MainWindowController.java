@@ -65,21 +65,18 @@ public class MainWindowController extends AbstractController {
         clock.play();
     }
 
-    private boolean tableIsOccupied(String tableNumber){
+    private boolean tableIsOccupied(String tableNumber) {
         return occupiedTables.contains(tableNumber);
     }
 
-    private String parseGroupName(String groupId){
-        System.out.println("id=" + groupId);
-        String a = groupId.substring(3);
-        return a;
+    private String parseGroupName(String groupId) {
+        return groupId.substring(3);
     }
 
-    private void setRectangleTableColor(Rectangle rectangle, String tableName){
-        if(tableIsOccupied(parseGroupName(tableName))){
+    private void setRectangleTableColor(Rectangle rectangle, String tableName) {
+        if (tableIsOccupied(parseGroupName(tableName))) {
             rectangle.setFill(Color.web(OCCUPIED_TABLE_COLOR));
-        }
-        else{
+        } else {
             rectangle.setFill(Color.web(FREE_TABLE_COLOR));
         }
     }
@@ -92,7 +89,7 @@ public class MainWindowController extends AbstractController {
         }
     }
 
-    private void setTableColor(Group tableGroup){
+    private void setTableColor(Group tableGroup) {
         Node tableShape = tableGroup.getChildren().get(0);
         if (tableShape != null) {
             if (tableShape instanceof Rectangle) {
@@ -103,15 +100,15 @@ public class MainWindowController extends AbstractController {
         }
     }
 
-    private void initTablesColor(){
-        for (Node tableGroup: groupsPane.getChildren()){
-            if (tableGroup instanceof Group){
-                setTableColor((Group)tableGroup);
+    private void initTablesColor() {
+        for (Node tableGroup : groupsPane.getChildren()) {
+            if (tableGroup instanceof Group) {
+                setTableColor((Group) tableGroup);
             }
         }
     }
 
-    public void initialize(URL location, ResourceBundle resources)  {
+    public void initialize(URL location, ResourceBundle resources) {
         setDateTime();
         initTablesColor();
     }

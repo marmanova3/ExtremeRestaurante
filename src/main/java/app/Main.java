@@ -25,8 +25,8 @@ public class Main extends Application {
 
     public void start(Stage primaryStage) throws Exception {
         mainStage = primaryStage;
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
+//        Session session = HibernateUtil.getSessionFactory().openSession();
+//        session.beginTransaction();
 
 
 //        CategoriesEntity cat = new CategoriesEntity();
@@ -63,8 +63,8 @@ public class Main extends Application {
 //        }
 //
 //
-        session.getTransaction().commit();
-        session.close();
+//        session.getTransaction().commit();
+//        session.close();
         System.out.println("Done");
 
 

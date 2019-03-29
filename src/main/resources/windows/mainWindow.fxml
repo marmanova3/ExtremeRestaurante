@@ -32,11 +32,11 @@
       </HBox>
    </top>
    <center>
-      <Pane prefHeight="430.0" prefWidth="900.0" style="-fx-background-color: #333333;" BorderPane.alignment="CENTER">
+      <Pane fx:id="groupsPane" prefHeight="430.0" prefWidth="900.0" style="-fx-background-color: #333333;" BorderPane.alignment="CENTER">
          <children>
             <Group fx:id="tab1" layoutX="172.0" layoutY="53.0" onMouseClicked="#handleTableClickAction">
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="82.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: #e1901e;" width="130.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="82.0" stroke="BLACK" strokeType="INSIDE" width="130.0" />
                   <Label layoutX="54.0" layoutY="12.0" text="1">
                      <font>
                         <Font size="40.0" />
@@ -46,7 +46,7 @@
             </Group>
             <Group fx:id="tab2" layoutX="171.0" layoutY="166.0" onMouseClicked="#handleTableClickAction">
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="82.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: #288e28;" width="130.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="82.0" stroke="BLACK" strokeType="INSIDE" width="130.0" />
                   <Label layoutX="54.0" layoutY="12.0" text="2">
                      <font>
                         <Font size="40.0" />
@@ -56,7 +56,7 @@
             </Group>
             <Group fx:id="tab3" layoutX="171.0" layoutY="272.0" onMouseClicked="#handleTableClickAction">
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="82.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: #288e28;" width="130.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="82.0" stroke="BLACK" strokeType="INSIDE" width="130.0" />
                   <Label layoutX="54.0" layoutY="12.0" text="3">
                      <font>
                         <Font size="40.0" />
@@ -66,7 +66,7 @@
             </Group>
             <Group fx:id="tab4" layoutX="343.0" layoutY="53.0" onMouseClicked="#handleTableClickAction">
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="82.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: #e1901e;" width="181.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="82.0" stroke="BLACK" strokeType="INSIDE" width="181.0" />
                   <Label layoutX="80.0" layoutY="14.0" text="4">
                      <font>
                         <Font size="40.0" />
@@ -76,7 +76,7 @@
             </Group>
             <Group fx:id="tab5" layoutX="343.0" layoutY="272.0" onMouseClicked="#handleTableClickAction">
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="82.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: #e1901e;" width="130.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="82.0" stroke="BLACK" strokeType="INSIDE" width="130.0" />
                   <Label layoutX="54.0" layoutY="12.0" text="5">
                      <font>
                         <Font size="40.0" />
@@ -86,7 +86,7 @@
             </Group>
             <Group fx:id="tab6" layoutX="513.0" layoutY="272.0" onMouseClicked="#handleTableClickAction">
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="82.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: #e1901e;" width="130.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="82.0" stroke="BLACK" strokeType="INSIDE" width="130.0" />
                   <Label layoutX="54.0" layoutY="12.0" text="6">
                      <font>
                         <Font size="40.0" />
@@ -96,7 +96,7 @@
             </Group>
             <Group fx:id="tab7" layoutX="716.0" layoutY="94.0" onMouseClicked="#handleTableClickAction">
                <children>
-                  <Circle fill="DODGERBLUE" radius="45.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: #288e28;" />
+                  <Circle fill="DODGERBLUE" radius="45.0" stroke="BLACK" strokeType="INSIDE" />
                   <Label layoutX="-11.0" layoutY="-29.0" prefHeight="53.0" prefWidth="22.0" text="7">
                      <font>
                         <Font size="40.0" />
@@ -106,7 +106,7 @@
             </Group>
             <Group fx:id="tab8" layoutX="716.0" layoutY="201.0" onMouseClicked="#handleTableClickAction">
                <children>
-                  <Circle fill="DODGERBLUE" radius="45.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: #e1901e;" />
+                  <Circle fill="DODGERBLUE" radius="45.0" stroke="BLACK" strokeType="INSIDE" />
                   <Label layoutX="-11.0" layoutY="-29.0" prefHeight="53.0" prefWidth="22.0" text="8">
                      <font>
                         <Font size="40.0" />
@@ -116,7 +116,7 @@
             </Group>
             <Group fx:id="tab9" layoutX="716.0" layoutY="309.0" onMouseClicked="#handleTableClickAction">
                <children>
-                  <Circle fill="DODGERBLUE" radius="45.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: #e1901e;" />
+                  <Circle fill="DODGERBLUE" radius="45.0" stroke="BLACK" strokeType="INSIDE" />
                   <Label layoutX="-14.0" layoutY="-29.0" prefHeight="58.0" prefWidth="29.0" text="9">
                      <font>
                         <Font size="40.0" />

@@ -11,6 +11,7 @@ public class OrdersEntity {
     private ItemsEntity item;
     private TablesEntity table;
     private String name;
+    private int quantity;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,6 +60,16 @@ public class OrdersEntity {
 
     public void setItem(ItemsEntity item) {
         this.item = item;
+    }
+
+    @Basic
+    @Column(name = "quantity", nullable = true)
+    public int getQuantity() {
+        return this.quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public String getName() {

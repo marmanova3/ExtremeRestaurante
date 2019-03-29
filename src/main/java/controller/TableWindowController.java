@@ -1,20 +1,24 @@
 package controller;
 
 import app.Main;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Callback;
 import model.ItemsEntity;
 import model.OrderItemEntity;
 import model.OrdersEntity;
@@ -23,7 +27,6 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 import utils.HibernateUtil;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -41,6 +44,7 @@ public class TableWindowController extends AbstractController implements Initial
 
     @FXML
     private TableView tableview;
+
 
     private ObservableList<OrderItemEntity> data = FXCollections.observableArrayList();
 
@@ -75,6 +79,32 @@ public class TableWindowController extends AbstractController implements Initial
         List l = qry.list();
         Iterator it = l.iterator();
 
+        tableview.setEditable(true);
+
+        Callback<TableColumn, TableCell> cellFactory =
+                new Callback<TableColumn, TableCell>() {
+                    public TableCell call(TableColumn p) {
+                        return new EditingCell();
+                    }
+                };
+
+        TableColumn col3 = new TableColumn("Quantity");
+
+        col3.setMinWidth(75);
+        col3.setCellFactory(cellFactory);
+
+        col3.setCellValueFactory(new PropertyValueFactory<OrderItemEntity, Integer>("quantity"));
+
+        col3.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<OrderItemEntity, Integer>>() {
+                    public void handle(TableColumn.CellEditEvent<OrderItemEntity, Integer> t) {
+                        ((OrderItemEntity) t.getTableView().getItems().get(
+                                t.getTablePosition().getRow())).setQuantity(t.getNewValue());
+                    }
+                });
+
+        tableview.getColumns().addAll(col3);
+
         double total = 0;
         while (it.hasNext()) {
             Object o[] = (Object[]) it.next();
@@ -85,11 +115,13 @@ public class TableWindowController extends AbstractController implements Initial
             OrderItemEntity oie = new OrderItemEntity();
             oie.setName(ie.getName());
             oie.setPrice(oe.getPrice());
+            oie.setQuantity(oe.getQuantity());
 
             data.add(oie);
 
+            System.out.println(oie.getQuantity());
             orders.add(oe);
-            total += oe.getPrice();
+            total += oe.getPrice() * oe.getQuantity();
         }
         this.total = total;
         tableview.setItems(data);
@@ -112,25 +144,6 @@ public class TableWindowController extends AbstractController implements Initial
     @FXML
     private void payAll() throws Exception {
         showPopupWindow();
-
-//        TOTO SA TERAZ ROBI V POP UP WINDOW - ak to bude OK, tak vymazat
-
-
-//        Session session = HibernateUtil.getSessionFactory().openSession();
-//        session.beginTransaction();
-//
-//        for (OrdersEntity order : orders) {
-//            order.setPaid(true);
-//            session.update(order);
-//            session.save(order);
-//        }
-//
-//        //TO DO update cash_register +priceTotal
-//        session.flush();
-//        session.getTransaction().commit();
-//        session.close();
-
-        //TO DO update cash_register + priceTotal ... toto este nie je!!!
         reload();
     }
 
@@ -203,5 +216,79 @@ public class TableWindowController extends AbstractController implements Initial
         popupStage.showAndWait();
 
 //        return popupController.getResult();
+    }
+
+    class EditingCell extends TableCell<OrderItemEntity, Integer> {
+
+        private TextField textField;
+
+        public EditingCell() {
+        }
+
+        @Override
+        public void startEdit() {
+            super.startEdit();
+
+            if (textField == null) {
+                createTextField();
+            }
+
+            setGraphic(textField);
+            setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+//            textField.selectAll();
+            Platform.runLater(new Runnable() {
+                public void run() {
+                    textField.requestFocus();
+                    textField.selectAll();
+                }
+            });
+        }
+
+        @Override
+        public void cancelEdit() {
+            super.cancelEdit();
+
+            setText(String.valueOf(getItem()));
+            setContentDisplay(ContentDisplay.TEXT_ONLY);
+        }
+
+        public void updateItem(Integer item, boolean empty) {
+            super.updateItem(item, empty);
+
+            if (empty) {
+                setText(null);
+                setGraphic(null);
+            } else {
+                if (isEditing()) {
+                    if (textField != null) {
+                        textField.setText(getString());
+                    }
+                    setGraphic(textField);
+                    setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+                } else {
+                    setText(getString());
+                    setContentDisplay(ContentDisplay.TEXT_ONLY);
+                }
+            }
+        }
+
+        private void createTextField() {
+            textField = new TextField(getString());
+            textField.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
+            textField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+                public void handle(KeyEvent t) {
+                    if (t.getCode() == KeyCode.ENTER) {
+                        commitEdit(Integer.parseInt(textField.getText()));
+                    } else if (t.getCode() == KeyCode.ESCAPE) {
+                        cancelEdit();
+                    }
+                }
+            });
+        }
+
+        private String getString() {
+            return getItem() == null ? "" : getItem().toString();
+        }
     }
 }

@@ -45,6 +45,8 @@ public class TableWindowController extends AbstractController implements Initial
     @FXML
     private TableView tableview;
 
+    @FXML
+    private TableColumn col1, col2;
 
     private ObservableList<OrderItemEntity> data = FXCollections.observableArrayList();
 
@@ -64,11 +66,48 @@ public class TableWindowController extends AbstractController implements Initial
         tableLabel.setText("TABLE " + (tableId + 1));
     }
 
+    public void updateTotal() {
+        total = 0;
+        for (OrdersEntity order : orders) {
+            total += order.getPrice() * order.getQuantity();
+        }
+        total = Math.round(total * 100.0) / 100.0;
+        priceTotal.setText(String.valueOf(total) + " €");
+        System.out.println(total);
+    }
+
+    public void updateOrder(OrderItemEntity oe) {
+        final Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        int id = oe.getOrderId();
+        OrdersEntity order = session.load(OrdersEntity.class, id);
+        if (oe.getQuantity() == 0) {
+//            session.delete(order);
+            order.setQuantity(oe.getQuantity());
+            order.setPaid(true);
+            orders.remove(order);
+        } else {
+            order.setQuantity(oe.getQuantity());
+            session.save(order);
+
+            for (OrdersEntity o : orders) {
+                if (o.getId() == id) {
+                    o.setQuantity(oe.getQuantity());
+                }
+            }
+        }
+        session.getTransaction().commit();
+        session.close();
+
+        updateTotal();
+    }
+
     public void initialize(URL location, ResourceBundle resources) {
         orders = new ArrayList<OrdersEntity>();
         initTable();
 
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        final Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
         TablesEntity table = getThisTable();
@@ -80,6 +119,7 @@ public class TableWindowController extends AbstractController implements Initial
         Iterator it = l.iterator();
 
         tableview.setEditable(true);
+        tableview.setStyle("-fx-background-color: black");
 
         Callback<TableColumn, TableCell> cellFactory =
                 new Callback<TableColumn, TableCell>() {
@@ -98,14 +138,15 @@ public class TableWindowController extends AbstractController implements Initial
         col3.setOnEditCommit(
                 new EventHandler<TableColumn.CellEditEvent<OrderItemEntity, Integer>>() {
                     public void handle(TableColumn.CellEditEvent<OrderItemEntity, Integer> t) {
-                        ((OrderItemEntity) t.getTableView().getItems().get(
-                                t.getTablePosition().getRow())).setQuantity(t.getNewValue());
+                        OrderItemEntity temp = (OrderItemEntity) t.getTableView().getItems().get(
+                                t.getTablePosition().getRow());
+                        temp.setQuantity(t.getNewValue());
+                        updateOrder(temp);
                     }
                 });
 
         tableview.getColumns().addAll(col3);
 
-        double total = 0;
         while (it.hasNext()) {
             Object o[] = (Object[]) it.next();
 
@@ -116,17 +157,22 @@ public class TableWindowController extends AbstractController implements Initial
             oie.setName(ie.getName());
             oie.setPrice(oe.getPrice());
             oie.setQuantity(oe.getQuantity());
+            oie.setOrderId(oe.getId());
 
             data.add(oie);
 
-            System.out.println(oie.getQuantity());
             orders.add(oe);
-            total += oe.getPrice() * oe.getQuantity();
         }
-        this.total = total;
+        System.out.println("init");
+
+        col3.setStyle("-fx-background-color: black; -fx-text-fill: white");
+        col1.setStyle("-fx-background-color: black; -fx-text-fill: white");
+        col2.setStyle("-fx-background-color: black; -fx-text-fill: white");
+
         tableview.setItems(data);
 
-        priceTotal.setText(String.valueOf(total) + " €");
+
+        updateTotal();
 
         session.getTransaction().commit();
         session.close();
@@ -158,14 +204,26 @@ public class TableWindowController extends AbstractController implements Initial
         int itemId = Integer.parseInt(clickedItemId.substring(4, (clickedItem.getId()).length()));
         ItemsEntity item = session.load(ItemsEntity.class, itemId);
 
-        OrdersEntity order = new OrdersEntity();
-        order.setPaid(false);
-        order.setItem(item);
-        order.setPrice(item.getPrice());
-        order.setTable(getThisTable());
-        orders.add(order);
+        boolean newOrder = true;
+        for (OrdersEntity order : orders) {
+            if (order.getItem().getId() == itemId) {
+                System.out.println("tu som bol");
+                order.setQuantity(order.getQuantity() + 1);
+                newOrder = false;
+                session.update(order);
+            }
+        }
+        if (newOrder) {
+            OrdersEntity order = new OrdersEntity();
+            order.setPaid(false);
+            order.setItem(item);
+            order.setPrice(item.getPrice());
+            order.setTable(getThisTable());
+            order.setQuantity(1);
+            orders.add(order);
+            session.save(order);
+        }
 
-        session.save(order);
         session.getTransaction().commit();
         session.close();
 

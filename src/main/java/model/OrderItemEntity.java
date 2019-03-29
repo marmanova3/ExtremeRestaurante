@@ -2,9 +2,18 @@ package model;
 
 
 public class OrderItemEntity {
+    private int orderId;
     private String name;
     private Double price;
     private Integer quantity;
+
+    public int getOrderId() {
+        return this.orderId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
 
     public Double getPrice() {
         return price;

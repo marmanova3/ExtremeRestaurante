@@ -150,11 +150,9 @@
                         <!--</GridPane>-->
                      <!--</children>-->
                   <!--</VBox>-->
-                   <TableView fx:id="tableview" layoutX="202.0" layoutY="-6.0" prefHeight="519.0" prefWidth="584.0" >
+                   <TableView fx:id="tableview" layoutX="202.0" layoutY="-6.0" prefHeight="519.0" prefWidth="584.0"
+                              style="-fx-background-color: 212121;">
                        <columns>
-                           <!--<TableColumn fx:id="col1" prefWidth="75.0" text="Id">-->
-                           <!--<cellValueFactory><PropertyValueFactory property="id" /></cellValueFactory>-->
-                           <!--</TableColumn>-->
                            <TableColumn fx:id="col1" prefWidth="268.0" text="Name">
                                <cellValueFactory>
                                    <PropertyValueFactory property="name" />
@@ -192,14 +190,15 @@
             </Button>
             <HBox layoutX="622.0" layoutY="363.0" prefHeight="53.0" prefWidth="263.0">
                <children>
-                  <Label prefHeight="35.0" prefWidth="165.0" text="Total:" textFill="WHITE">
+                   <Label prefHeight="56.0" prefWidth="104.0" text="Total:" textFill="WHITE">
                      <font>
-                        <Font size="36.0" />
+                         <Font size="25.0"/>
                      </font>
                   </Label>
-                   <Label fx:id="priceTotal" alignment="CENTER_RIGHT" prefHeight="53.0" prefWidth="149.0" text="9 € " textFill="#ff6730">
+                   <Label fx:id="priceTotal" alignment="CENTER_RIGHT" prefHeight="53.0" prefWidth="220.0"
+                          text="1009,90 € " textFill="#ff6730">
                      <font>
-                        <Font size="36.0" />
+                         <Font size="33.0"/>
                      </font>
                   </Label>
                </children>

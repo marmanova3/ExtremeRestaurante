@@ -86,7 +86,7 @@ public class PopUpController  extends AbstractController implements Initializabl
 
     @FXML
     private void confirm() throws Exception {
-        if (receivedCasIsValid()){
+        if (receivedCashIsValid()) {
 
             if (payAll()){
                 showSuccessMessage();
@@ -112,7 +112,7 @@ public class PopUpController  extends AbstractController implements Initializabl
         message.setVisible(true);
     }
 
-    private boolean receivedCasIsValid(){
+    private boolean receivedCashIsValid() {
         try {
             double receivedCashFromCustomer = Double.parseDouble(cashInput.getText());
             Double priceToPayDouble = new Double(priceToPay);

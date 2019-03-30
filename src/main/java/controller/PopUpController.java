@@ -10,24 +10,27 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import model.OrderItemEntity;
 import model.OrdersEntity;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import utils.HibernateUtil;
+import utils.ReceiptPrinter;
 
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-
 public class PopUpController extends AbstractController {
 
-    @FXML private Button confirmBtn, cancelBtn;
+    @FXML
+    private Button confirmBtn, cancelBtn, printBtn;
     @FXML private TextField cashInput;
     @FXML private Label outlayOutput, message, tableNumber;
     private Stage stage;
     private double priceToPay;
     private List<OrdersEntity> orders;
+    private List<OrderItemEntity> orderItems;
     private int tableId;
 
     public void initialize(URL url, ResourceBundle rb) {
@@ -83,6 +86,10 @@ public class PopUpController extends AbstractController {
         this.orders = orders;
     }
 
+    public void setOrderItems(List<OrderItemEntity> orderItems) {
+        this.orderItems = orderItems;
+    }
+
     @FXML
     private void confirm() throws Exception {
         if (receivedCasIsValid()){
@@ -91,13 +98,22 @@ public class PopUpController extends AbstractController {
                 showSuccessMessage();
                 outlayOutput.setText(String.format("%.2f", getOutlay()));
                 confirmBtn.setDisable(true);
-
+                printBtn.setDisable(false);
+                cashInput.setDisable(true);
             } else {
                 showErrorMessage();
             }
         } else {
             showErrorMessage();
         }
+    }
+
+    @FXML
+    private void printReceipt() throws Exception {
+        String total = Double.toString(priceToPay);
+        String cash = Double.toString(Double.parseDouble(cashInput.getText()));
+        String outlay = String.format("%.2f", getOutlay());
+        ReceiptPrinter.print(total, cash, outlay, orderItems);
     }
 
     private void showSuccessMessage(){
@@ -154,5 +170,4 @@ public class PopUpController extends AbstractController {
 
         //TO DO update cash_register + priceTotal ... toto este nie je!!!
     }
-
 }

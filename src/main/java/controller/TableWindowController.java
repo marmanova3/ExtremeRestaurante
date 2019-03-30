@@ -142,6 +142,7 @@ public class TableWindowController extends AbstractController {
     }
 
     @FXML
+    //sluzi docastne na pridavanie dat, naviazane na Print button
     private void addItemToOrders(MouseEvent event) throws Exception {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
@@ -188,12 +189,14 @@ public class TableWindowController extends AbstractController {
         Scene scene = new Scene(root);
         Stage popupStage = new Stage();
         popupStage.initStyle(StageStyle.UNDECORATED);
-        if(this.main!=null) {
+        if (this.main != null) {
             popupStage.initOwner(main.getPrimaryStage());
         }
         popupController.setStage(popupStage);
         popupController.setPriceToPay(this.total);
         popupController.setOrders(this.orders);
+        // TODO posielam data na vypis bloku = this.data su vsetky items bude treba zmenit ked sa ucet bude delit
+        popupController.setOrderItems(this.data);
         popupController.setTableId(tableId);
         popupStage.initModality(Modality.WINDOW_MODAL);
         popupStage.setScene(scene);

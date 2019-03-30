@@ -34,7 +34,7 @@ import java.util.ResourceBundle;
 
 public class TableWindowController extends AbstractController {
 
-    private int tableId;
+    public static int tableId;
     private double total;
     private List<OrdersEntity> orders;
 

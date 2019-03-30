@@ -1,13 +1,12 @@
 package controller;
 
-import app.Main;
+import app.Scenes;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -33,9 +32,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class TableWindowController extends AbstractController implements Initializable {
+public class TableWindowController extends AbstractController {
 
-    private int tableId;
+    public static int tableId;
     private double total;
     private List<OrdersEntity> orders;
 
@@ -179,12 +178,7 @@ public class TableWindowController extends AbstractController implements Initial
     }
 
     private void reload() throws Exception {
-        FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/windows/tableWindow.fxml"));
-        Parent root = (Parent) loader.load();
-
-        Stage stage = Main.mainStage;
-        stage.setScene(new Scene(root));
-        stage.show();
+        redirect(Scenes.TABLE_WINDOW);
     }
 
     @FXML
@@ -194,6 +188,7 @@ public class TableWindowController extends AbstractController implements Initial
     }
 
     @FXML
+    //sluzi docastne na pridavanie dat, naviazane na Print button
     private void addItemToOrders(MouseEvent event) throws Exception {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
@@ -232,22 +227,12 @@ public class TableWindowController extends AbstractController implements Initial
 
     @FXML
     private void handleBackAction() throws Exception {
-        FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/windows/mainWindow.fxml"));
-        Parent root = (Parent) loader.load();
-
-        Stage stage = Main.mainStage;
-        stage.setScene(new Scene(root));
-        stage.show();
+        redirect(Scenes.MAIN_WINDOW);
     }
 
     @FXML
     private void handleMenuAction() throws Exception {
-        FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/windows/chooseItemsWindow.fxml"));
-        Parent root = (Parent) loader.load();
-
-        Stage stage = Main.mainStage;
-        stage.setScene(new Scene(root));
-        stage.show();
+        redirect(Scenes.CHOOSE_ITEMS_WINDOW);
     }
 
     private void showPopupWindow() throws Exception {
@@ -255,19 +240,21 @@ public class TableWindowController extends AbstractController implements Initial
 //    private HashMap<String, Object> showPopupWindow() {
 //        HashMap<Stringng, Object> resultMap = new HashMap<String, Object>();
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/windows/popUpWindow.fxml"));
+        FXMLLoader loader = getSceneLoader(Scenes.POP_UP_WINDOW);
         Parent root = (Parent) loader.load();
         PopUpController popupController = loader.getController();
 
         Scene scene = new Scene(root);
         Stage popupStage = new Stage();
         popupStage.initStyle(StageStyle.UNDECORATED);
-        if(this.main!=null) {
+        if (this.main != null) {
             popupStage.initOwner(main.getPrimaryStage());
         }
         popupController.setStage(popupStage);
         popupController.setPriceToPay(this.total);
         popupController.setOrders(this.orders);
+        // TODO posielam data na vypis bloku = this.data su vsetky items bude treba zmenit ked sa ucet bude delit
+        popupController.setOrderItems(this.data);
         popupController.setTableId(tableId);
         popupStage.initModality(Modality.WINDOW_MODAL);
         popupStage.setScene(scene);

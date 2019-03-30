@@ -38,4 +38,8 @@ public class OrderItemEntity {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
+    public Integer getNameLength() {
+        return this.name.length();
+    }
 }

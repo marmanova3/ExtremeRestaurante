@@ -11,7 +11,7 @@
         <property name="hibernate.connection.username">pxisnitl</property>
         <property name="hibernate.connection.password">ympvv0KwfdIt4OicG93V2NLXfIKP3cwW</property>
 
-        <property name="show_sql">true</property>
+        <property name="show_sql">false</property>
         <property name="format_sql">true</property>
         <mapping class="model.CashRegisterEntity"/>
         <mapping resource="model/CashRegisterEntity.hbm.xml"/>

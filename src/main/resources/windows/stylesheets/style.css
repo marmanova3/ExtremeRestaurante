@@ -1,15 +1,7 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
 
 .btn-category {
-    -fx-background-color:  #333333;
+    -fx-background-color: #333333;
     -fx-font-size: 18px;
     -fx-text-fill: white;
-}
-
-/*.btn-category:selected {*/
-    /*-fx-background-color: #565656;*/
-/*}*/
-
-.selected {
-    -fx-background-color: #565656;
 }

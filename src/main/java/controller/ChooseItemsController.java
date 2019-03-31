@@ -5,10 +5,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -39,9 +37,6 @@ public class ChooseItemsController extends AbstractController implements Initial
 
     @FXML
     private FlowPane flowPane;
-
-    @FXML
-    private VBox categoryGroup;
 
     @FXML
     private Button drinks;
@@ -119,8 +114,7 @@ public class ChooseItemsController extends AbstractController implements Initial
     }
 
     public void initialize(URL location, ResourceBundle resources) {
-//        drinks.getStyleClass().add("selected");
-        drinks.setFocusTraversable(true);
+        drinks.setStyle("-fx-background-color: #565656;");
         setTable();
         getCategories();
         getCategoryMenu();
@@ -154,13 +148,12 @@ public class ChooseItemsController extends AbstractController implements Initial
         categoryButtons.add(sideDishes);
     }
 
-//    TODO: nefunguje a nechepem preco
     private void toggleCategoryAcitveState() {
         for (Button button : categoryButtons) {
             if (clickedCategory == button) {
-                button.getStyleClass().add("selected");
+                button.setStyle("-fx-background-color: #565656;");
             } else {
-                button.getStyleClass().remove("selected");
+                button.setStyle("-fx-background-color: #333333;");
             }
         }
     }
@@ -171,15 +164,12 @@ public class ChooseItemsController extends AbstractController implements Initial
         Query query = session.createQuery("select id, name from CategoriesEntity");
 
         List queryList = query.list();
-        Iterator iterator = queryList.iterator();
 
-        while (iterator.hasNext()) {
-            Object object[] = (Object[]) iterator.next();
+        for (Object o : queryList) {
+            Object[] object = (Object[]) o;
             CategoriesEntity category = new CategoriesEntity();
             category.setId((int) object[0]);
-            System.out.print(category.getId());
             category.setName(object[1].toString());
-            System.out.print(category.getName());
             categories.add(category);
         }
 
@@ -200,7 +190,7 @@ public class ChooseItemsController extends AbstractController implements Initial
         menuItems.removeAll(menuItems);
 
         while (iterator.hasNext()) {
-            Object object[] = (Object[]) iterator.next();
+            Object[] object = (Object[]) iterator.next();
             ItemsEntity menuItem = new ItemsEntity();
             menuItem.setId((int) object[0]);
             menuItem.setName(object[1].toString());

@@ -18,7 +18,7 @@
         <property name="quantity">
             <column name="quantity" sql-type="integer" not-null="true"/>
         </property>
-        <many-to-one name="table" column="table_id" class="model.TablesEntity" not-null="true"/>
-        <many-to-one cascade="persist" name="item" column="item" class="model.ItemsEntity" not-null="true"/>
+        <many-to-one cascade="save-update" name="table" column="table_id" class="model.TablesEntity" not-null="true"/>
+        <many-to-one cascade="save-update" name="item" column="item" class="model.ItemsEntity" not-null="true"/>
     </class>
 </hibernate-mapping>

@@ -8,21 +8,27 @@ import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
-import model.*;
+import model.CategoriesEntity;
+import model.ItemsEntity;
+import model.OrdersEntity;
+import model.TablesEntity;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import utils.HibernateQueries;
 import utils.HibernateUtil;
 
 import java.net.URL;
-import java.util.Iterator;
-import java.util.ResourceBundle;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ResourceBundle;
 
 public class ChooseItemsController extends AbstractController implements Initializable {
 
@@ -165,15 +171,10 @@ public class ChooseItemsController extends AbstractController implements Initial
         tableLabel.setText("TABLE " + (this.tableId + 1));
 
         Session session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
 
-        Query query = session.createQuery("from TablesEntity where id =: tableId");
-        query.setParameter("tableId", tableId);
-        List<?> list = query.list();
+        System.out.println("table: " + tableId);
+        table = session.load(TablesEntity.class, tableId);
 
-        table = (TablesEntity) list.get(0);
-
-        session.getTransaction().commit();
         session.close();
     }
 

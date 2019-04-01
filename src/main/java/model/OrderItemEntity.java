@@ -6,6 +6,7 @@ public class OrderItemEntity {
     private String name;
     private Double price;
     private Integer quantity;
+    private boolean checkbox;
 
     public int getOrderId() {
         return this.orderId;
@@ -41,5 +42,13 @@ public class OrderItemEntity {
 
     public Integer getNameLength() {
         return this.name.length();
+    }
+
+    public boolean getCheckbox() {
+        return this.checkbox;
+    }
+
+    public void setCheckbox(boolean checkbox) {
+        this.checkbox = checkbox;
     }
 }

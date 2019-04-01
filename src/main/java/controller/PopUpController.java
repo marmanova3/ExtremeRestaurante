@@ -80,7 +80,7 @@ public class PopUpController extends AbstractController {
     }
 
     /**
-     * Sets list of orders (so it can change soft_delete attribute and commit to db)
+     * Sets list of orders
      */
     public void setOrders(List<OrdersEntity> orders){
         this.orders = orders;
@@ -91,10 +91,9 @@ public class PopUpController extends AbstractController {
     }
 
     @FXML
-    private void confirm() throws Exception {
+    private void confirm() {
         if (receivedCashIsValid()) {
-
-            if (payAll()){
+            if (payAll()) {
                 showSuccessMessage();
                 outlayOutput.setText(String.format("%.2f", getOutlay()));
                 confirmBtn.setDisable(true);
@@ -109,7 +108,7 @@ public class PopUpController extends AbstractController {
     }
 
     @FXML
-    private void printReceipt() throws Exception {
+    private void printReceipt() {
         String total = Double.toString(priceToPay);
         String cash = Double.toString(Double.parseDouble(cashInput.getText()));
         String outlay = String.format("%.2f", getOutlay());
@@ -121,6 +120,7 @@ public class PopUpController extends AbstractController {
         message.setTextFill(Color.web("#2ec60b"));
         message.setVisible(true);
     }
+
     private void showErrorMessage(){
         message.setText("Payment denied");
         message.setTextFill(Color.web("#c90b0b"));

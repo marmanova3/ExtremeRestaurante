@@ -82,10 +82,9 @@ public class TableWindowController extends AbstractController {
         int id = oe.getOrderId();
         OrdersEntity order = session.load(OrdersEntity.class, id);
         if (oe.getQuantity() == 0) {
-//            session.delete(order);
-            order.setQuantity(oe.getQuantity());
-            order.setPaid(true);
             orders.remove(order);
+            session.remove(order);
+//                    .delete(order);
         } else {
             order.setQuantity(oe.getQuantity());
             session.save(order);
@@ -98,8 +97,9 @@ public class TableWindowController extends AbstractController {
         }
         session.getTransaction().commit();
         session.close();
+        reload();
 
-        updateTotal();
+//        updateTotal();
     }
 
     public void initialize(URL location, ResourceBundle resources) {
@@ -128,12 +128,9 @@ public class TableWindowController extends AbstractController {
                 };
 
         TableColumn col3 = new TableColumn("Quantity");
-
         col3.setMinWidth(75);
         col3.setCellFactory(cellFactory);
-
         col3.setCellValueFactory(new PropertyValueFactory<OrderItemEntity, Integer>("quantity"));
-
         col3.setOnEditCommit(
                 new EventHandler<TableColumn.CellEditEvent<OrderItemEntity, Integer>>() {
                     public void handle(TableColumn.CellEditEvent<OrderItemEntity, Integer> t) {
@@ -143,6 +140,10 @@ public class TableWindowController extends AbstractController {
                         updateOrder(temp);
                     }
                 });
+
+        col1.setStyle("-fx-background-color: black; -fx-text-fill: white");
+        col2.setStyle("-fx-background-color: black; -fx-text-fill: white");
+        col3.setStyle("-fx-background-color: black; -fx-text-fill: white");
 
         tableview.getColumns().addAll(col3);
 
@@ -162,14 +163,8 @@ public class TableWindowController extends AbstractController {
 
             orders.add(oe);
         }
-        System.out.println("init");
-
-        col3.setStyle("-fx-background-color: black; -fx-text-fill: white");
-        col1.setStyle("-fx-background-color: black; -fx-text-fill: white");
-        col2.setStyle("-fx-background-color: black; -fx-text-fill: white");
 
         tableview.setItems(data);
-
 
         updateTotal();
 
@@ -177,7 +172,7 @@ public class TableWindowController extends AbstractController {
         session.close();
     }
 
-    private void reload() throws Exception {
+    private void reload() {
         redirect(Scenes.TABLE_WINDOW);
     }
 
@@ -189,7 +184,7 @@ public class TableWindowController extends AbstractController {
 
     @FXML
     //sluzi docastne na pridavanie dat, naviazane na Print button
-    private void addItemToOrders(MouseEvent event) throws Exception {
+    private void addItemToOrders(MouseEvent event) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
@@ -226,12 +221,12 @@ public class TableWindowController extends AbstractController {
     }
 
     @FXML
-    private void handleBackAction() throws Exception {
+    private void handleBackAction() {
         redirect(Scenes.MAIN_WINDOW);
     }
 
     @FXML
-    private void handleMenuAction() throws Exception {
+    private void handleMenuAction() {
         redirect(Scenes.CHOOSE_ITEMS_WINDOW);
     }
 

@@ -192,42 +192,6 @@ public class TableWindowController extends AbstractController {
     }
 
     @FXML
-    //sluzi docastne na pridavanie dat, naviazane na Print button
-    private void addItemToOrders(MouseEvent event) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
-
-        //TO DO zavesit na spravy Shape
-        Button clickedItem = (Button) event.getSource();
-        String clickedItemId = clickedItem.getId();
-        int itemId = Integer.parseInt(clickedItemId.substring(4, (clickedItem.getId()).length()));
-        ItemsEntity item = session.load(ItemsEntity.class, itemId);
-
-        boolean newOrder = true;
-        for (OrdersEntity order : getOrders()) {
-            if (order.getItem().getId() == itemId) {
-                order.setQuantity(order.getQuantity() + 1);
-                newOrder = false;
-                session.update(order);
-            }
-        }
-        if (newOrder) {
-            OrdersEntity order = new OrdersEntity();
-            order.setPaid(false);
-            order.setItem(item);
-            order.setPrice(item.getPrice());
-            order.setTable(getThisTable());
-            order.setQuantity(1);
-            session.save(order);
-        }
-
-        session.getTransaction().commit();
-        session.close();
-
-        reload();
-    }
-
-    @FXML
     private void handleBackAction() {
         redirect(Scenes.MAIN_WINDOW);
     }
@@ -235,6 +199,11 @@ public class TableWindowController extends AbstractController {
     @FXML
     private void handleMenuAction() {
         redirect(Scenes.CHOOSE_ITEMS_WINDOW);
+    }
+
+    @FXML
+    private  void printActionHandler() {
+        System.out.println("PRINT");
     }
 
     private void showPopupWindow(List<OrdersEntity> orders) throws Exception {

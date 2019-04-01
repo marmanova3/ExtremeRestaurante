@@ -173,7 +173,7 @@
                     </content>
                 </ScrollPane>
                 <Line endX="162.0" layoutX="722.0" layoutY="2.0" startX="-100.0" stroke="WHITE" strokeWidth="2.0" />
-                <Button fx:id="item1" layoutX="620.0" layoutY="472.0" mnemonicParsing="false" onMouseClicked="#addItemToOrders" prefHeight="46.0" prefWidth="80.0" text="Print">
+                <Button fx:id="item1" layoutX="620.0" layoutY="472.0" mnemonicParsing="false" onMouseClicked="#printActionHandler" prefHeight="46.0" prefWidth="80.0" text="Print">
                     <font>
                         <Font size="18.0" />
                     </font>

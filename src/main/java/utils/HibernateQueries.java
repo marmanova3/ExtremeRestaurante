@@ -1,5 +1,7 @@
 package utils;
 
+import model.OrdersEntity;
+import model.TablesEntity;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -30,5 +32,20 @@ public class HibernateQueries {
         session.close();
 
         return occupiedTablesNames;
+    }
+
+    public static List<OrdersEntity> getOrders(TablesEntity table) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        Query query = session.createQuery("from OrdersEntity where paid=false and table=:table");
+        query.setParameter("table", table);
+
+        List<OrdersEntity> orders = query.list();
+
+        session.getTransaction().commit();
+        session.close();
+
+        return orders;
     }
 }

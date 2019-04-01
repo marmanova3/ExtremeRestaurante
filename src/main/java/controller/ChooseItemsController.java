@@ -15,6 +15,7 @@ import javafx.scene.text.Font;
 import model.*;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import utils.HibernateQueries;
 import utils.HibernateUtil;
 
 import java.net.URL;
@@ -131,14 +132,23 @@ public class ChooseItemsController extends AbstractController implements Initial
 
         ItemsEntity item = session.load(ItemsEntity.class, Integer.parseInt(clickedItemId));
 
-        OrdersEntity order = new OrdersEntity();
-        order.setPaid(false);
-        order.setQuantity(1);
-        order.setItem(item);
-        order.setPrice(item.getPrice());
-        order.setTable(table);
-
-        session.save(order);
+        boolean newOrder = true;
+        for (OrdersEntity order : HibernateQueries.getOrders(table)) {
+            if (order.getItem().getId() == Integer.parseInt(clickedItemId)) {
+                order.setQuantity(order.getQuantity() + 1);
+                newOrder = false;
+                session.update(order);
+            }
+        }
+        if (newOrder) {
+            OrdersEntity order = new OrdersEntity();
+            order.setPaid(false);
+            order.setItem(item);
+            order.setPrice(item.getPrice());
+            order.setTable(table);
+            order.setQuantity(1);
+            session.save(order);
+        }
         session.getTransaction().commit();
         session.close();
     }

@@ -27,7 +27,6 @@ import org.hibernate.query.Query;
 import utils.HibernateUtil;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -36,7 +35,6 @@ public class TableWindowController extends AbstractController {
 
     public static int tableId;
     private double total;
-    private List<OrdersEntity> orders;
 
     @FXML
     private Label tableLabel, priceTotal;
@@ -67,12 +65,27 @@ public class TableWindowController extends AbstractController {
 
     public void updateTotal() {
         total = 0;
-        for (OrdersEntity order : orders) {
+        for (OrdersEntity order : getOrders()) {
             total += order.getPrice() * order.getQuantity();
         }
         total = Math.round(total * 100.0) / 100.0;
         priceTotal.setText(String.valueOf(total) + " €");
         System.out.println(total);
+    }
+
+    public List<OrdersEntity> getOrders() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        Query query = session.createQuery("from OrdersEntity where paid=false and table=:id");
+        query.setParameter("id", getThisTable());
+
+        List orders = query.list();
+
+        session.getTransaction().commit();
+        session.close();
+
+        return orders;
     }
 
     public void updateOrder(OrderItemEntity oe) {
@@ -82,28 +95,17 @@ public class TableWindowController extends AbstractController {
         int id = oe.getOrderId();
         OrdersEntity order = session.load(OrdersEntity.class, id);
         if (oe.getQuantity() == 0) {
-            orders.remove(order);
             session.remove(order);
-//                    .delete(order);
         } else {
             order.setQuantity(oe.getQuantity());
             session.save(order);
-
-            for (OrdersEntity o : orders) {
-                if (o.getId() == id) {
-                    o.setQuantity(oe.getQuantity());
-                }
-            }
         }
         session.getTransaction().commit();
         session.close();
         reload();
-
-//        updateTotal();
     }
 
     public void initialize(URL location, ResourceBundle resources) {
-        orders = new ArrayList<OrdersEntity>();
         initTable();
 
         final Session session = HibernateUtil.getSessionFactory().openSession();
@@ -160,8 +162,6 @@ public class TableWindowController extends AbstractController {
             oie.setOrderId(oe.getId());
 
             data.add(oie);
-
-            orders.add(oe);
         }
 
         tableview.setItems(data);
@@ -178,8 +178,17 @@ public class TableWindowController extends AbstractController {
 
     @FXML
     private void payAll() throws Exception {
-        showPopupWindow();
+        showPopupWindow(getOrders());
         reload();
+    }
+
+    @FXML
+    private void devidePayment() throws Exception {
+//        for (OrdersEntity order: getOrders()) {
+//            if
+//        }
+//        showPopupWindow();
+//        reload();
     }
 
     @FXML
@@ -195,9 +204,8 @@ public class TableWindowController extends AbstractController {
         ItemsEntity item = session.load(ItemsEntity.class, itemId);
 
         boolean newOrder = true;
-        for (OrdersEntity order : orders) {
+        for (OrdersEntity order : getOrders()) {
             if (order.getItem().getId() == itemId) {
-                System.out.println("tu som bol");
                 order.setQuantity(order.getQuantity() + 1);
                 newOrder = false;
                 session.update(order);
@@ -210,7 +218,6 @@ public class TableWindowController extends AbstractController {
             order.setPrice(item.getPrice());
             order.setTable(getThisTable());
             order.setQuantity(1);
-            orders.add(order);
             session.save(order);
         }
 
@@ -230,10 +237,7 @@ public class TableWindowController extends AbstractController {
         redirect(Scenes.CHOOSE_ITEMS_WINDOW);
     }
 
-    private void showPopupWindow() throws Exception {
-
-//    private HashMap<String, Object> showPopupWindow() {
-//        HashMap<Stringng, Object> resultMap = new HashMap<String, Object>();
+    private void showPopupWindow(List<OrdersEntity> orders) throws Exception {
 
         FXMLLoader loader = getSceneLoader(Scenes.POP_UP_WINDOW);
         Parent root = (Parent) loader.load();
@@ -247,15 +251,13 @@ public class TableWindowController extends AbstractController {
         }
         popupController.setStage(popupStage);
         popupController.setPriceToPay(this.total);
-        popupController.setOrders(this.orders);
+        popupController.setOrders(orders);
         // TODO posielam data na vypis bloku = this.data su vsetky items bude treba zmenit ked sa ucet bude delit
         popupController.setOrderItems(this.data);
         popupController.setTableId(tableId);
         popupStage.initModality(Modality.WINDOW_MODAL);
         popupStage.setScene(scene);
         popupStage.showAndWait();
-
-//        return popupController.getResult();
     }
 
     class EditingCell extends TableCell<OrderItemEntity, Integer> {

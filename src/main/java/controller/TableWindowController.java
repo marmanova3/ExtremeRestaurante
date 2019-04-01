@@ -40,7 +40,7 @@ public class TableWindowController extends AbstractController {
 
     public static int tableId;
     private double total;
-    private boolean devidePayment = false;
+    private boolean dividePayment = false;
 
     @FXML
     private Label tableLabel, priceTotal;
@@ -54,7 +54,7 @@ public class TableWindowController extends AbstractController {
     private TableColumn col4;
 
     @FXML
-    private Button devideButton;
+    private Button divideButton;
 
     private ObservableList<OrderItemEntity> data = FXCollections.observableArrayList();
 
@@ -72,7 +72,7 @@ public class TableWindowController extends AbstractController {
         String id = MainWindowController.clickedTable;
         tableId = Character.getNumericValue(id.charAt(id.length() - 1)) - 1;
         tableLabel.setText("TABLE " + (tableId + 1));
-        devideButton.setText("Devide");
+        divideButton.setText("Divide");
     }
 
     public void updateTotal(List<OrdersEntity> orders) {
@@ -191,8 +191,8 @@ public class TableWindowController extends AbstractController {
     @FXML
     private void pay() throws Exception {
         List<OrdersEntity> orders;
-        if (devidePayment) {
-            orders = getDevidedOrders();
+        if (dividePayment) {
+            orders = getDividedOrders();
         } else {
             orders = getOrders();
         }
@@ -202,19 +202,19 @@ public class TableWindowController extends AbstractController {
 
     @FXML
     private void handleDevideButton() {
-        devidePayment = !devidePayment;
-        if (devidePayment) {
-            devideButton.setText("Cancel");
-            addDevidePaymentColumn();
-            updateTotal(getDevidedOrders());
+        dividePayment = !dividePayment;
+        if (dividePayment) {
+            divideButton.setText("Cancel");
+            addDividePaymentColumn();
+            updateTotal(getDividedOrders());
         } else {
-            devideButton.setText("Devide");
-            removeDevidePaymentColumn();
+            divideButton.setText("Devide");
+            removeDividePaymentColumn();
             updateTotal(getOrders());
         }
     }
 
-    private void addDevidePaymentColumn() {
+    private void addDividePaymentColumn() {
         col4 = new TableColumn("Pay");
         col4.setMinWidth(50);
         col4.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<OrderItemEntity, CheckBox>, ObservableValue<CheckBox>>() {
@@ -227,7 +227,7 @@ public class TableWindowController extends AbstractController {
                 checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
                     public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
                         temp.setCheckbox(new_val);
-                        updateTotal(getDevidedOrders());
+                        updateTotal(getDividedOrders());
                     }
                 });
                 checkBox.setAlignment(Pos.CENTER);
@@ -240,11 +240,11 @@ public class TableWindowController extends AbstractController {
         tableview.getColumns().addAll(col4);
     }
 
-    private void removeDevidePaymentColumn() {
+    private void removeDividePaymentColumn() {
         tableview.getColumns().remove(3);
     }
 
-    private List<OrdersEntity> getDevidedOrders() {
+    private List<OrdersEntity> getDividedOrders() {
         List<OrdersEntity> orders = new ArrayList<>();
         for (Object row : tableview.getItems()) {
             OrderItemEntity orderItem = (OrderItemEntity) row;
@@ -255,7 +255,7 @@ public class TableWindowController extends AbstractController {
         return orders;
     }
 
-    private List<OrderItemEntity> getDevidedOrderItems() {
+    private List<OrderItemEntity> getDividedOrderItems() {
         List<OrderItemEntity> orderItems = new ArrayList<>();
         for (Object row : tableview.getItems()) {
             OrderItemEntity orderItem = (OrderItemEntity) row;
@@ -292,8 +292,8 @@ public class TableWindowController extends AbstractController {
         popupController.setPriceToPay(this.total);
         popupController.setOrders(orders);
         List<OrderItemEntity> bill;
-        if (devidePayment) {
-            bill = getDevidedOrderItems();
+        if (dividePayment) {
+            bill = getDividedOrderItems();
         } else {
             bill = this.data;
         }

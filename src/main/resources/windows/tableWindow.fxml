@@ -179,8 +179,8 @@
                         <Font size="18.0" />
                     </font>
                 </Button>
-                <Button fx:id="devideButton" layoutX="777.0" layoutY="472.0" mnemonicParsing="false"
-                        onMouseClicked="#handleDevideButton" prefHeight="46.0" prefWidth="100.0" text="Devide">
+                <Button fx:id="divideButton" layoutX="777.0" layoutY="472.0" mnemonicParsing="false"
+                        onMouseClicked="#handleDivideButton" prefHeight="46.0" prefWidth="100.0" text="Devide">
                     <font>
                         <Font size="18.0" />
                     </font>

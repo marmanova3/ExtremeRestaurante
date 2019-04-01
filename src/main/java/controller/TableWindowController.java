@@ -56,6 +56,7 @@ public class TableWindowController extends AbstractController {
     @FXML
     private Button divideButton;
 
+
     private ObservableList<OrderItemEntity> data = FXCollections.observableArrayList();
 
     public TableWindowController() {
@@ -201,14 +202,14 @@ public class TableWindowController extends AbstractController {
     }
 
     @FXML
-    private void handleDevideButton() {
+    private void handleDivideButton() {
         dividePayment = !dividePayment;
         if (dividePayment) {
             divideButton.setText("Cancel");
             addDividePaymentColumn();
             updateTotal(getDividedOrders());
         } else {
-            divideButton.setText("Devide");
+            divideButton.setText("Divide");
             removeDividePaymentColumn();
             updateTotal(getOrders());
         }

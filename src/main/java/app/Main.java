@@ -27,8 +27,11 @@ public class Main extends Application {
         System.out.println("App started");
 
         Parent root = (Parent) FXMLLoader.load(this.getClass().getResource(Scenes.MAIN_WINDOW.toString()));
+
+        Scene scene = new Scene(root);
+        primaryStage.setScene(scene);
+
         primaryStage.setTitle("Extreme Restaurante");
-        primaryStage.setScene(new Scene(root));
         primaryStage.setResizable(false);
         primaryStage.show();
     }

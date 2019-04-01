@@ -173,17 +173,14 @@
                     </content>
                 </ScrollPane>
                 <Line endX="162.0" layoutX="722.0" layoutY="2.0" startX="-100.0" stroke="WHITE" strokeWidth="2.0" />
-                <Button fx:id="item1" layoutX="620.0" layoutY="472.0" mnemonicParsing="false" onMouseClicked="#printActionHandler" prefHeight="46.0" prefWidth="80.0" text="Print">
+                <Button layoutX="643.0" layoutY="472.0" mnemonicParsing="false" onMouseClicked="#pay" prefHeight="46.0"
+                        prefWidth="100.0" text="Pay">
                     <font>
                         <Font size="18.0" />
                     </font>
                 </Button>
-                <Button layoutX="713.0" layoutY="472.0" mnemonicParsing="false" onMouseClicked="#payAll" prefHeight="46.0" prefWidth="80.0" text="Pay all">
-                    <font>
-                        <Font size="18.0" />
-                    </font>
-                </Button>
-                <Button layoutX="805.0" layoutY="472.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="80.0" text="Divide">
+                <Button fx:id="devideButton" layoutX="777.0" layoutY="472.0" mnemonicParsing="false"
+                        onMouseClicked="#handleDevideButton" prefHeight="46.0" prefWidth="100.0" text="Devide">
                     <font>
                         <Font size="18.0" />
                     </font>

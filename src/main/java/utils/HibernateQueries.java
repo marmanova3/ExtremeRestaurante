@@ -11,6 +11,13 @@ import java.util.List;
 
 public class HibernateQueries {
 
+    public static OrdersEntity getOrder(int orderId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        OrdersEntity order = session.load(OrdersEntity.class, orderId);
+        session.close();
+        return order;
+    }
+
     public static List<String> findOccupiedTables(){
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();

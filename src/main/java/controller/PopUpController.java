@@ -74,7 +74,6 @@ public class PopUpController extends AbstractController {
         tableNumber.setText("TABLE " + (tableId + 1));
     }
 
-
     public void setPriceToPay(double priceToPay){
         this.priceToPay = priceToPay;
     }

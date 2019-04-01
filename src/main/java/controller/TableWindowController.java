@@ -2,18 +2,21 @@ package controller;
 
 import app.Scenes;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -24,9 +27,11 @@ import model.OrdersEntity;
 import model.TablesEntity;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import utils.HibernateQueries;
 import utils.HibernateUtil;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -35,6 +40,7 @@ public class TableWindowController extends AbstractController {
 
     public static int tableId;
     private double total;
+    private boolean devidePayment = false;
 
     @FXML
     private Label tableLabel, priceTotal;
@@ -44,6 +50,11 @@ public class TableWindowController extends AbstractController {
 
     @FXML
     private TableColumn col1, col2;
+
+    private TableColumn col4;
+
+    @FXML
+    private Button devideButton;
 
     private ObservableList<OrderItemEntity> data = FXCollections.observableArrayList();
 
@@ -61,16 +72,16 @@ public class TableWindowController extends AbstractController {
         String id = MainWindowController.clickedTable;
         tableId = Character.getNumericValue(id.charAt(id.length() - 1)) - 1;
         tableLabel.setText("TABLE " + (tableId + 1));
+        devideButton.setText("Devide");
     }
 
-    public void updateTotal() {
+    public void updateTotal(List<OrdersEntity> orders) {
         total = 0;
-        for (OrdersEntity order : getOrders()) {
+        for (OrdersEntity order : orders) {
             total += order.getPrice() * order.getQuantity();
         }
         total = Math.round(total * 100.0) / 100.0;
         priceTotal.setText(String.valueOf(total) + " €");
-        System.out.println(total);
     }
 
     public List<OrdersEntity> getOrders() {
@@ -160,13 +171,14 @@ public class TableWindowController extends AbstractController {
             oie.setPrice(oe.getPrice());
             oie.setQuantity(oe.getQuantity());
             oie.setOrderId(oe.getId());
+            oie.setCheckbox(false);
 
             data.add(oie);
         }
 
         tableview.setItems(data);
 
-        updateTotal();
+        updateTotal(getOrders());
 
         session.getTransaction().commit();
         session.close();
@@ -177,18 +189,81 @@ public class TableWindowController extends AbstractController {
     }
 
     @FXML
-    private void payAll() throws Exception {
-        showPopupWindow(getOrders());
+    private void pay() throws Exception {
+        List<OrdersEntity> orders;
+        if (devidePayment) {
+            orders = getDevidedOrders();
+        } else {
+            orders = getOrders();
+        }
+        showPopupWindow(orders);
         reload();
     }
 
     @FXML
-    private void devidePayment() throws Exception {
-//        for (OrdersEntity order: getOrders()) {
-//            if
-//        }
-//        showPopupWindow();
-//        reload();
+    private void handleDevideButton() {
+        devidePayment = !devidePayment;
+        if (devidePayment) {
+            devideButton.setText("Cancel");
+            addDevidePaymentColumn();
+            updateTotal(getDevidedOrders());
+        } else {
+            devideButton.setText("Devide");
+            removeDevidePaymentColumn();
+            updateTotal(getOrders());
+        }
+    }
+
+    private void addDevidePaymentColumn() {
+        col4 = new TableColumn("Pay");
+        col4.setMinWidth(50);
+        col4.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<OrderItemEntity, CheckBox>, ObservableValue<CheckBox>>() {
+            public ObservableValue<CheckBox> call(
+                    TableColumn.CellDataFeatures<OrderItemEntity, CheckBox> arg0) {
+                OrderItemEntity temp = arg0.getValue();
+                CheckBox checkBox = new CheckBox();
+                checkBox.selectedProperty().setValue(temp.getCheckbox());
+
+                checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+                    public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
+                        temp.setCheckbox(new_val);
+                        updateTotal(getDevidedOrders());
+                    }
+                });
+                checkBox.setAlignment(Pos.CENTER);
+                return new SimpleObjectProperty<CheckBox>(checkBox);
+            }
+        });
+
+        col4.setStyle("-fx-background-color: black; -fx-text-fill: white");
+
+        tableview.getColumns().addAll(col4);
+    }
+
+    private void removeDevidePaymentColumn() {
+        tableview.getColumns().remove(3);
+    }
+
+    private List<OrdersEntity> getDevidedOrders() {
+        List<OrdersEntity> orders = new ArrayList<>();
+        for (Object row : tableview.getItems()) {
+            OrderItemEntity orderItem = (OrderItemEntity) row;
+            if (orderItem.getCheckbox()) {
+                orders.add(HibernateQueries.getOrder(orderItem.getOrderId()));
+            }
+        }
+        return orders;
+    }
+
+    private List<OrderItemEntity> getDevidedOrderItems() {
+        List<OrderItemEntity> orderItems = new ArrayList<>();
+        for (Object row : tableview.getItems()) {
+            OrderItemEntity orderItem = (OrderItemEntity) row;
+            if (orderItem.getCheckbox()) {
+                orderItems.add(orderItem);
+            }
+        }
+        return orderItems;
     }
 
     @FXML
@@ -199,11 +274,6 @@ public class TableWindowController extends AbstractController {
     @FXML
     private void handleMenuAction() {
         redirect(Scenes.CHOOSE_ITEMS_WINDOW);
-    }
-
-    @FXML
-    private  void printActionHandler() {
-        System.out.println("PRINT");
     }
 
     private void showPopupWindow(List<OrdersEntity> orders) throws Exception {
@@ -221,8 +291,13 @@ public class TableWindowController extends AbstractController {
         popupController.setStage(popupStage);
         popupController.setPriceToPay(this.total);
         popupController.setOrders(orders);
-        // TODO posielam data na vypis bloku = this.data su vsetky items bude treba zmenit ked sa ucet bude delit
-        popupController.setOrderItems(this.data);
+        List<OrderItemEntity> bill;
+        if (devidePayment) {
+            bill = getDevidedOrderItems();
+        } else {
+            bill = this.data;
+        }
+        popupController.setOrderItems(bill);
         popupController.setTableId(tableId);
         popupStage.initModality(Modality.WINDOW_MODAL);
         popupStage.setScene(scene);

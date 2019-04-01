@@ -7,6 +7,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -24,13 +25,20 @@ import java.util.List;
 
 public class ChooseItemsController extends AbstractController implements Initializable {
 
+    private static final int drinksCategoryId = 7;
+    private static final int mainCoursesCategoryId = 2;
+    private static final int soupsCategoryId = 0;
+    private static final int dessertsCategoryId = 3;
+    private static final int pastaCategoryId = 5;
+    private static final int pizzaCategoryId = 6;
+    private static final int sideDishCategoryId = 4;
+
     private int tableId;
     private TablesEntity table;
     private int categoryId = 7;
     private Button clickedCategory;
-    private List<CategoriesEntity> categories = new ArrayList<>();
     private List<ItemsEntity> menuItems = new ArrayList<>();
-    private  ArrayList<Button> categoryButtons = new ArrayList<>();
+    private ArrayList<Button> categoryButtons = new ArrayList<>();
 
     @FXML
     private Label tableLabel;
@@ -66,57 +74,78 @@ public class ChooseItemsController extends AbstractController implements Initial
 
     @FXML
     private void handleMenuItemsDrinks() {
-        categoryId = 7;
+        categoryId = drinksCategoryId;
         clickedCategory = drinks;
         getCategoryMenu();
     }
 
     @FXML
     private void handleMenuItemsMainCourse() {
-        categoryId = 2;
+        categoryId = mainCoursesCategoryId;
         clickedCategory = mainCourse;
         getCategoryMenu();
     }
 
     @FXML
     private void handleMenuItemsSoups() {
-        categoryId = 0;
+        categoryId = soupsCategoryId;
         clickedCategory = soups;
         getCategoryMenu();
     }
 
     @FXML
     private void handleMenuItemsDesserts() {
-        categoryId = 3;
+        categoryId = dessertsCategoryId;
         clickedCategory = desserts;
         getCategoryMenu();
     }
 
     @FXML
     private void handleMenuItemsPasta() {
-        categoryId = 5;
+        categoryId = pastaCategoryId;
         clickedCategory = pasta;
         getCategoryMenu();
     }
 
     @FXML
     private void handleMenuItemsPizza() {
-        categoryId = 6;
+        categoryId = pizzaCategoryId;
         clickedCategory = pizza;
         getCategoryMenu();
     }
 
     @FXML
     private void handleMenuItemsSideDish() {
-        categoryId = 4;
+        categoryId = sideDishCategoryId;
         clickedCategory = sideDishes;
         getCategoryMenu();
+    }
+
+    @FXML
+    private void addItemToOrders(MouseEvent event) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        Button clickedItem = (Button) event.getSource();
+        String clickedItemId = clickedItem.getId();
+
+        ItemsEntity item = session.load(ItemsEntity.class, Integer.parseInt(clickedItemId));
+
+        OrdersEntity order = new OrdersEntity();
+        order.setPaid(false);
+        order.setQuantity(1);
+        order.setItem(item);
+        order.setPrice(item.getPrice());
+        order.setTable(table);
+
+        session.save(order);
+        session.getTransaction().commit();
+        session.close();
     }
 
     public void initialize(URL location, ResourceBundle resources) {
         drinks.setStyle("-fx-background-color: #565656;");
         setTable();
-        getCategories();
         getCategoryMenu();
         initializeCategoryButtons();
     }
@@ -132,13 +161,13 @@ public class ChooseItemsController extends AbstractController implements Initial
         query.setParameter("tableId", tableId);
         List<?> list = query.list();
 
-        table = (TablesEntity)list.get(0);
+        table = (TablesEntity) list.get(0);
 
         session.getTransaction().commit();
         session.close();
     }
 
-    private  void initializeCategoryButtons() {
+    private void initializeCategoryButtons() {
         categoryButtons.add(drinks);
         categoryButtons.add(mainCourse);
         categoryButtons.add(soups);
@@ -156,26 +185,6 @@ public class ChooseItemsController extends AbstractController implements Initial
                 button.setStyle("-fx-background-color: #333333;");
             }
         }
-    }
-
-    private void getCategories() {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
-        Query query = session.createQuery("select id, name from CategoriesEntity");
-
-        List queryList = query.list();
-
-        for (Object o : queryList) {
-            Object[] object = (Object[]) o;
-            CategoriesEntity category = new CategoriesEntity();
-            category.setId((int) object[0]);
-            category.setName(object[1].toString());
-            categories.add(category);
-        }
-
-        session.getTransaction().commit();
-        session.close();
-
     }
 
     private void getCategoryMenu() {
@@ -211,33 +220,17 @@ public class ChooseItemsController extends AbstractController implements Initial
     private void setMenuItems() {
         flowPane.getChildren().clear();
         for (ItemsEntity item : menuItems) {
-            Button btn = new Button(item.getName());
-            btn.setPrefSize(180, 100);
-            btn.setBackground(new Background(new BackgroundFill(Color.web("#333333"), CornerRadii.EMPTY, Insets.EMPTY)));
-            btn.setTextFill(Paint.valueOf("#fff"));
-            btn.setFont(Font.font(18));
-            btn.setOnAction(event -> addMenuItemToOrder(item));
-            btn.setCursor(Cursor.HAND);
-            flowPane.setMargin(btn, new Insets(0, 0, 10, 10));
-            flowPane.getChildren().addAll(btn);
+            Button button = new Button(item.getName());
+            button.setPrefSize(180, 100);
+            button.setBackground(new Background(new BackgroundFill(Color.web("#333333"), CornerRadii.EMPTY, Insets.EMPTY)));
+            button.setTextFill(Paint.valueOf("#fff"));
+            button.setFont(Font.font(18));
+            button.setId(String.valueOf(item.getId()));
+            button.setCursor(Cursor.HAND);
+            button.setOnMouseClicked(event -> addItemToOrders(event));
+            flowPane.setMargin(button, new Insets(0, 0, 10, 10));
+            flowPane.getChildren().addAll(button);
         }
 
-    }
-
-// TODO: nejaka metoda uz nato zevraj je spystaj sa dievcat toto pada
-    private void addMenuItemToOrder(ItemsEntity item) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
-
-        OrdersEntity order = new OrdersEntity();
-        order.setItem(item);
-        order.setTable(table);
-        order.setPrice(item.getPrice());
-        order.setPaid(false);
-        order.setQuantity(1);
-
-        session.save(order);
-        session.getTransaction().commit();
-        session.close();
     }
 }

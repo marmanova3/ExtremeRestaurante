@@ -1,9 +1,8 @@
 package utils;
 
-import model.CategoriesEntity;
-import model.ItemsEntity;
-import model.OrdersEntity;
-import model.TablesEntity;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import model.*;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -134,5 +133,71 @@ public class HibernateQueries {
         session.getTransaction().commit();
         session.close();
         session = null;
+    }
+
+    public static List<OrdersEntity> getOrdersByTable(TablesEntity table){
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        Query query = session.createQuery("from OrdersEntity where paid=false and table=:table");
+        query.setParameter("table", table);
+
+        List orders = query.list();
+
+        session.getTransaction().commit();
+        session.close();
+
+        return orders;
+    }
+
+    public static ObservableList<OrderItemEntity> getOrderItemsEntitiesByTable(TablesEntity table){
+        ObservableList<OrderItemEntity> orderItemEntities = FXCollections.observableArrayList();
+
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        Query qry = session.createQuery("from OrdersEntity as o left join ItemsEntity as i  on o.item.id=i.id where o.paid=false and o.table=:table");
+        qry.setParameter("table", table);
+
+        List list = qry.list();
+        Iterator iterator = list.iterator();
+
+        while (iterator.hasNext()) {
+            Object order[] = (Object[]) iterator.next();
+
+            OrdersEntity orderEntity = (OrdersEntity) order[0];
+            ItemsEntity itemEntity = (ItemsEntity) order[1];
+
+            OrderItemEntity orderItemEntity = new OrderItemEntity();
+            orderItemEntity.setName(itemEntity.getName());
+            orderItemEntity.setPrice(orderEntity.getPrice());
+            orderItemEntity.setQuantity(orderEntity.getQuantity());
+            orderItemEntity.setOrderId(orderEntity.getId());
+            orderItemEntity.setCheckbox(false);
+
+            orderItemEntities.add(orderItemEntity);
+        }
+
+        session.getTransaction().commit();
+        session.close();
+
+        return orderItemEntities;
+    }
+
+    public static void updateOrderByQuantity(OrderItemEntity orderItemEntity){
+        final Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        int id = orderItemEntity.getOrderId();
+
+        OrdersEntity order = session.load(OrdersEntity.class, id);
+        if (orderItemEntity.getQuantity() == 0) {
+            session.remove(order);
+        } else {
+            order.setQuantity(orderItemEntity.getQuantity());
+            session.save(order);
+        }
+        session.getTransaction().commit();
+        session.close();
     }
 }

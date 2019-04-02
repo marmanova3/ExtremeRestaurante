@@ -1,11 +1,9 @@
 package controller;
 
 import app.Scenes;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -14,269 +12,58 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
-import model.ItemsEntity;
 import model.OrderItemEntity;
 import model.OrdersEntity;
 import model.TablesEntity;
 import org.hibernate.Session;
-import org.hibernate.query.Query;
+import utils.EditingCell;
 import utils.HibernateQueries;
 import utils.HibernateUtil;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class TableWindowController extends AbstractController {
 
+    private static final String BUTTON_TEXT_DIVIDE = "Divide";
+    private static final String BUTTON_TEXT_CANCEL = "Cancel";
+    private static final String TABLE_COLUMN_STYLE = "-fx-background-color: black; -fx-text-fill: white";
+    private static final String TABLE_VIEW_STYLE = "-fx-background-color: black";
+
+    private static final String QUANTITY_COLUMN_NAME = "Quantity";
+    private static final String PAY_COLUMN_NAME = "Pay";
+    private static final int QUANTITY_COLUMN_WIDTH = 75;
+    private static final int PAY_COLUMN_WIDTH = 50;
+
     private static int tableId;
     private double total;
-    private boolean dividePayment = false;
+    private boolean dividePayment;
+    ObservableList<OrderItemEntity> orderItemEntities;
+    private TablesEntity table;
 
-    @FXML
-    private Label tableLabel, priceTotal;
+    @FXML private Label tableLabel, priceTotal;
+    @FXML private TableView tableview;
+    @FXML private TableColumn col1, col2, col3, col4;
+    @FXML private Button divideButton;
 
-    @FXML
-    private TableView tableview;
-
-    @FXML
-    private TableColumn col1, col2;
-
-    private TableColumn col4;
-
-    @FXML
-    private Button divideButton;
-
-
-    private ObservableList<OrderItemEntity> data = FXCollections.observableArrayList();
-
-    public TableWindowController() {
-    }
-
-    private TablesEntity getThisTable() {
-        //G - mam pocit ze toto uz je v Queries
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        TablesEntity table = session.load(TablesEntity.class, tableId);
-        session.close();
-        return table;
-    }
-
-    public void initTable() {
-        String id = MainWindowController.clickedTable;
-        tableId = Character.getNumericValue(id.charAt(id.length() - 1)) - 1;
-        tableLabel.setText("TABLE " + (tableId + 1));
-        divideButton.setText("Divide");
-    }
-
-    public static int getTableId(){
-        return tableId;
-    }
-
-    public void updateTotal(List<OrdersEntity> orders) {
-        total = 0;
-        for (OrdersEntity order : orders) {
-            total += order.getPrice() * order.getQuantity();
-        }
-        total = Math.round(total * 100.0) / 100.0;
-        priceTotal.setText(String.valueOf(total) + " €");
-    }
-
-    public List<OrdersEntity> getOrders() {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
-
-        Query query = session.createQuery("from OrdersEntity where paid=false and table=:id");
-        query.setParameter("id", getThisTable());
-
-        List orders = query.list();
-
-        session.getTransaction().commit();
-        session.close();
-
-        return orders;
-    }
-
-    public void updateOrder(OrderItemEntity oe) {
-        final Session session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
-
-        int id = oe.getOrderId();
-        OrdersEntity order = session.load(OrdersEntity.class, id);
-        if (oe.getQuantity() == 0) {
-            session.remove(order);
-        } else {
-            order.setQuantity(oe.getQuantity());
-            session.save(order);
-        }
-        session.getTransaction().commit();
-        session.close();
-        reload();
-    }
 
     public void initialize(URL location, ResourceBundle resources) {
-        initTable();
-
-        final Session session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
-
-        TablesEntity table = getThisTable();
-
-        Query qry = session.createQuery("from OrdersEntity as o left join ItemsEntity as i  on o.item.id=i.id where o.paid=false and o.table=:id");
-        //premenovat nie na id ale na table
-        qry.setParameter("id", table);
-
-        List l = qry.list();
-        Iterator it = l.iterator();
-
-        tableview.setEditable(true);
-        tableview.setStyle("-fx-background-color: black");
-
-        Callback<TableColumn, TableCell> cellFactory =
-                new Callback<TableColumn, TableCell>() {
-                    public TableCell call(TableColumn p) {
-                        return new EditingCell();
-                    }
-                };
-
-        TableColumn col3 = new TableColumn("Quantity");
-        col3.setMinWidth(75);
-        col3.setCellFactory(cellFactory);
-        col3.setCellValueFactory(new PropertyValueFactory<OrderItemEntity, Integer>("quantity"));
-        col3.setOnEditCommit(
-                new EventHandler<TableColumn.CellEditEvent<OrderItemEntity, Integer>>() {
-                    public void handle(TableColumn.CellEditEvent<OrderItemEntity, Integer> t) {
-                        OrderItemEntity temp = (OrderItemEntity) t.getTableView().getItems().get(
-                                t.getTablePosition().getRow());
-                        temp.setQuantity(t.getNewValue());
-                        updateOrder(temp);
-                    }
-                });
-
-        col1.setStyle("-fx-background-color: black; -fx-text-fill: white");
-        col2.setStyle("-fx-background-color: black; -fx-text-fill: white");
-        col3.setStyle("-fx-background-color: black; -fx-text-fill: white");
-
-        tableview.getColumns().addAll(col3);
-
-        while (it.hasNext()) {
-            Object o[] = (Object[]) it.next();
-
-            OrdersEntity oe = (OrdersEntity) o[0];
-            ItemsEntity ie = (ItemsEntity) o[1];
-
-            OrderItemEntity oie = new OrderItemEntity();
-            oie.setName(ie.getName());
-            oie.setPrice(oe.getPrice());
-            oie.setQuantity(oe.getQuantity());
-            oie.setOrderId(oe.getId());
-            oie.setCheckbox(false);
-
-            data.add(oie);
-        }
-
-        tableview.setItems(data);
-
+        setTableInfo();
+        setTableEntity();
+        setDefaultDivideInfo();
+        addQuantityColumn();
+        setTableViewAttributes();
+        fillTableView();
         updateTotal(getOrders());
-
-        session.getTransaction().commit();
-        session.close();
-    }
-
-    private void reload() {
-        redirect(Scenes.TABLE_WINDOW);
-    }
-
-    @FXML
-    private void pay() throws Exception {
-        //skusat vymazat Exceptions
-        List<OrdersEntity> orders;
-        //toto vytiahnut do metodky, ktora vrati co ma ist do orders
-        if (dividePayment) {
-            orders = getDividedOrders();
-        } else {
-            orders = getOrders();
-        }
-        showPopupWindow(orders);
-        reload();
-    }
-
-    @FXML
-    private void handleDivideButton() {
-        dividePayment = !dividePayment;
-        if (dividePayment) {
-            divideButton.setText("Cancel");
-            addDividePaymentColumn();
-            updateTotal(getDividedOrders());
-        } else {
-            divideButton.setText("Divide");
-            removeDividePaymentColumn();
-            updateTotal(getOrders());
-        }
-    }
-
-    private void addDividePaymentColumn() {
-        col4 = new TableColumn("Pay");
-        col4.setMinWidth(50);
-        //vytiahnut do zvlast funkcie pre kazdy checkboux
-        col4.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<OrderItemEntity, CheckBox>, ObservableValue<CheckBox>>() {
-            public ObservableValue<CheckBox> call(
-                    TableColumn.CellDataFeatures<OrderItemEntity, CheckBox> arg0) {
-                OrderItemEntity temp = arg0.getValue();
-                CheckBox checkBox = new CheckBox();
-                checkBox.selectedProperty().setValue(temp.getCheckbox());
-
-                checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-                    // vytiahnut do meotodky
-                    public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
-                        temp.setCheckbox(new_val);
-                        updateTotal(getDividedOrders());
-                    }
-                });
-                checkBox.setAlignment(Pos.CENTER);
-                return new SimpleObjectProperty<CheckBox>(checkBox);
-            }
-        });
-
-        col4.setStyle("-fx-background-color: black; -fx-text-fill: white");
-
-        tableview.getColumns().addAll(col4);
-    }
-
-    private void removeDividePaymentColumn() {
-        tableview.getColumns().remove(3);
-    }
-
-    private List<OrdersEntity> getDividedOrders() {
-        // nechat
-        List<OrdersEntity> orders = new ArrayList<>();
-        for (Object row : tableview.getItems()) {
-            OrderItemEntity orderItem = (OrderItemEntity) row;
-            if (orderItem.getCheckbox()) {
-                orders.add(HibernateQueries.getOrderById(orderItem.getOrderId()));
-            }
-        }
-        return orders;
-    }
-
-    private List<OrderItemEntity> getDividedOrderItems() {
-        //nechat
-        List<OrderItemEntity> orderItems = new ArrayList<>();
-        for (Object row : tableview.getItems()) {
-            OrderItemEntity orderItem = (OrderItemEntity) row;
-            if (orderItem.getCheckbox()) {
-                orderItems.add(orderItem);
-            }
-        }
-        return orderItems;
     }
 
     @FXML
@@ -289,7 +76,184 @@ public class TableWindowController extends AbstractController {
         redirect(Scenes.CHOOSE_ITEMS_WINDOW);
     }
 
-    private void showPopupWindow(List<OrdersEntity> orders) throws Exception {
+    @FXML
+    private void pay() throws Exception {
+        List<OrdersEntity> ordersToPay = getOrdersByDividePayment();
+        showPopupWindow(ordersToPay);
+        reload();
+    }
+
+    @FXML
+    private void handleDivideButton() {
+        dividePayment = !dividePayment;
+        if (dividePayment) {
+            divideButton.setText(BUTTON_TEXT_CANCEL);
+            addDividePaymentColumn();
+            updateTotal(getDividedOrders());
+        } else {
+            divideButton.setText(BUTTON_TEXT_DIVIDE);
+            removeDividePaymentColumn();
+            updateTotal(getOrders());
+        }
+    }
+
+    private void setTableViewAttributes(){
+        tableview.setEditable(true);
+        tableview.setStyle(TABLE_VIEW_STYLE);
+        col1.setStyle(TABLE_COLUMN_STYLE);
+        col2.setStyle(TABLE_COLUMN_STYLE);
+        col3.setStyle(TABLE_COLUMN_STYLE);
+    }
+
+    private void addQuantityColumn(){
+        Callback<TableColumn, TableCell> cellFactory = p -> new EditingCell();
+        col3 = new TableColumn(QUANTITY_COLUMN_NAME);
+        col3.setMinWidth(QUANTITY_COLUMN_WIDTH);
+        col3.setCellFactory(cellFactory);
+        col3.setCellValueFactory(new PropertyValueFactory<OrderItemEntity, Integer>("quantity"));
+        setOnEditCommitToColumn(col3);
+        tableview.getColumns().addAll(col3);
+    }
+
+    private void setOnEditCommitToColumn(TableColumn tableColumn){
+        tableColumn.setOnEditCommit(
+            new EventHandler<TableColumn.CellEditEvent<OrderItemEntity, Integer>>() {
+                public void handle(TableColumn.CellEditEvent<OrderItemEntity, Integer> t) {
+                    OrderItemEntity orderItemEntity = (OrderItemEntity) t.getTableView().getItems().get(
+                            t.getTablePosition().getRow());
+                    orderItemEntity.setQuantity(t.getNewValue());
+                    updateOrderByQuantity(orderItemEntity);
+                }
+            });
+    }
+
+    private void addDividePaymentColumn() {
+        col4 = new TableColumn(PAY_COLUMN_NAME);
+        col4.setMinWidth(PAY_COLUMN_WIDTH);
+        col4.setStyle(TABLE_COLUMN_STYLE);
+        addCheckboxesToColumn(col4);
+        tableview.getColumns().addAll(col4);
+    }
+
+    private void addCheckboxesToColumn(TableColumn tableColumn){
+        tableColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<OrderItemEntity, CheckBox>, ObservableValue<CheckBox>>() {
+            public ObservableValue<CheckBox> call(TableColumn.CellDataFeatures<OrderItemEntity, CheckBox> arg0) {
+                OrderItemEntity orderItemEntity = arg0.getValue();
+                CheckBox checkBox = new CheckBox();
+                checkBox.selectedProperty().setValue(orderItemEntity.getCheckbox());
+                addListenersToCheckbox(checkBox, orderItemEntity);
+                checkBox.setAlignment(Pos.CENTER);
+                return new SimpleObjectProperty<CheckBox>(checkBox);
+            }
+        });
+    }
+
+    private void addListenersToCheckbox(CheckBox checkbox, OrderItemEntity orderItemEntity){
+        checkbox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
+                orderItemEntity.setCheckbox(new_val);
+                updateTotal(getDividedOrders());
+            }
+        });
+    }
+
+    private void fillTableView(){
+        orderItemEntities = HibernateQueries.getOrderItemsEntitiesByTable(table);
+        tableview.setItems(orderItemEntities);
+    }
+
+    private void setTableEntity(){
+        table = HibernateQueries.getTableById(tableId);
+    }
+
+    public void setTableInfo() {
+        String id = MainWindowController.getClickedTable();
+        tableId = Character.getNumericValue(getLastCharacter(id)) - 1;
+        tableLabel.setText("TABLE " + (tableId + 1));
+    }
+
+    private List<OrdersEntity> getOrdersByDividePayment(){
+        if (dividePayment) {
+            return getDividedOrders();
+        }
+        return getOrders();
+    }
+
+    private List<OrderItemEntity> getOrderItemsEntitiesByDividePayment(){
+        if (dividePayment) {
+            return getDividedOrderItems();
+        }
+        return orderItemEntities;
+    }
+
+    private void setDefaultDivideInfo(){
+        divideButton.setText(BUTTON_TEXT_DIVIDE);
+        dividePayment = false;
+    }
+
+    private char getLastCharacter(String input){
+        return input.length() > 0 ? input.charAt(input.length() - 1) : ' ';
+    }
+
+    public static int getTableId(){
+        return tableId;
+    }
+
+    public void updateTotal(List<OrdersEntity> orders) {
+        total = getTotalCountOfOrders(orders);
+        priceTotal.setText(String.valueOf(total) + " €");
+    }
+
+    private double getTotalCountOfOrders(List<OrdersEntity> orders){
+        double sum = 0;
+        for (OrdersEntity order : orders) {
+            sum += order.getPrice() * order.getQuantity();
+        }
+        sum = Math.round(sum * 100.0) / 100.0;
+        return sum;
+    }
+
+    public List<OrdersEntity> getOrders() {
+        return HibernateQueries.getOrdersByTable(table);
+    }
+
+    public void updateOrderByQuantity(OrderItemEntity orderItemEntity) {
+        HibernateQueries.updateOrderByQuantity(orderItemEntity);
+        reload();
+    }
+
+    private void reload() {
+        redirect(Scenes.TABLE_WINDOW);
+    }
+
+    private void removeDividePaymentColumn() {
+        tableview.getColumns().remove(3);
+    }
+
+    private List<OrdersEntity> getDividedOrders() {
+        List<OrdersEntity> orders = new ArrayList<>();
+        for (Object row : tableview.getItems()) {
+            OrderItemEntity orderItem = (OrderItemEntity) row;
+            if (orderItem.getCheckbox()) {
+                OrdersEntity orderEntity = HibernateQueries.getOrderById(orderItem.getOrderId());
+                orders.add(orderEntity);
+            }
+        }
+        return orders;
+    }
+
+    private List<OrderItemEntity> getDividedOrderItems() {
+        List<OrderItemEntity> orderItems = new ArrayList<>();
+        for (Object row : tableview.getItems()) {
+            OrderItemEntity orderItem = (OrderItemEntity) row;
+            if (orderItem.getCheckbox()) {
+                orderItems.add(orderItem);
+            }
+        }
+        return orderItems;
+    }
+
+    private void showPopupWindow(List<OrdersEntity> ordersToPay) throws Exception {
 
         //toto keby sa dalo do Abstract Controllera - pre Gabi
         FXMLLoader loader = getSceneLoader(Scenes.POP_UP_WINDOW);
@@ -299,21 +263,15 @@ public class TableWindowController extends AbstractController {
         Scene scene = new Scene(root);
         Stage popupStage = new Stage();
 
-
         popupStage.initStyle(StageStyle.UNDECORATED);
         if (this.main != null) {
             popupStage.initOwner(main.getPrimaryStage());
         }
         popupController.setStage(popupStage);
         popupController.setPriceToPay(this.total);
-        popupController.setOrders(orders);
-        List<OrderItemEntity> receipt; //dobre som to premenovala?
-        //vytiahnut ako metodku
-        if (dividePayment) {
-            receipt = getDividedOrderItems();
-        } else {
-            receipt = this.data;
-        }
+        popupController.setOrders(ordersToPay);
+        List<OrderItemEntity> receipt = getOrderItemsEntitiesByDividePayment();
+
         popupController.setOrderItems(receipt);
         popupController.setTableId(tableId);
         popupStage.initModality(Modality.WINDOW_MODAL);
@@ -321,78 +279,4 @@ public class TableWindowController extends AbstractController {
         popupStage.showAndWait();
     }
 
-    //hodit do utils
-    class EditingCell extends TableCell<OrderItemEntity, Integer> {
-
-        private TextField textField;
-
-        public EditingCell() {
-        }
-
-        @Override
-        public void startEdit() {
-            super.startEdit();
-
-            if (textField == null) {
-                createTextField();
-            }
-
-            setGraphic(textField);
-            setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-//            textField.selectAll();
-            Platform.runLater(new Runnable() {
-                public void run() {
-                    textField.requestFocus();
-                    textField.selectAll();
-                }
-            });
-        }
-
-        @Override
-        public void cancelEdit() {
-            super.cancelEdit();
-
-            setText(String.valueOf(getItem()));
-            setContentDisplay(ContentDisplay.TEXT_ONLY);
-        }
-
-        public void updateItem(Integer item, boolean empty) {
-            super.updateItem(item, empty);
-
-            if (empty) {
-                setText(null);
-                setGraphic(null);
-            } else {
-                if (isEditing()) {
-                    if (textField != null) {
-                        textField.setText(getString());
-                    }
-                    setGraphic(textField);
-                    setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-                } else {
-                    setText(getString());
-                    setContentDisplay(ContentDisplay.TEXT_ONLY);
-                }
-            }
-        }
-
-        private void createTextField() {
-            textField = new TextField(getString());
-            textField.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
-            textField.setOnKeyPressed(new EventHandler<KeyEvent>() {
-
-                public void handle(KeyEvent t) {
-                    if (t.getCode() == KeyCode.ENTER) {
-                        commitEdit(Integer.parseInt(textField.getText()));
-                    } else if (t.getCode() == KeyCode.ESCAPE) {
-                        cancelEdit();
-                    }
-                }
-            });
-        }
-
-        private String getString() {
-            return getItem() == null ? "" : getItem().toString();
-        }
-    }
 }

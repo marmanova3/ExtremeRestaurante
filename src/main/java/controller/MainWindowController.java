@@ -34,7 +34,7 @@ public class MainWindowController extends AbstractController {
     private Pane groupsPane;
 
     final List<String> occupiedTables = HibernateQueries.getOccupiedTables();
-    public static String clickedTable;
+    private static String clickedTable;
 
     private String FREE_TABLE_COLOR = "#288e28";
     private String OCCUPIED_TABLE_COLOR = "#e1901e";
@@ -79,6 +79,10 @@ public class MainWindowController extends AbstractController {
         } else {
             rectangle.setFill(Color.web(FREE_TABLE_COLOR));
         }
+    }
+
+    public static String getClickedTable(){
+        return clickedTable;
     }
 
     private void setCircleTableColor(Circle circle, String tableName) {

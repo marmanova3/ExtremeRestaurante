@@ -38,9 +38,10 @@ public class MainWindowController extends AbstractController {
     private String FREE_TABLE_COLOR = "#288e28";
     private String OCCUPIED_TABLE_COLOR = "#e1901e";
 
-
-    public static String getClickedTable() {
-        return clickedTable;
+    public void initialize(URL location, ResourceBundle resources) {
+        setDateTime();
+        List<String> occupiedTables = HibernateQueries.getOccupiedTables();
+        initTablesColor(occupiedTables);
     }
 
     @FXML
@@ -52,8 +53,12 @@ public class MainWindowController extends AbstractController {
         redirect(Scenes.TABLE_WINDOW);
     }
 
+    public static String getClickedTable() {
+        return clickedTable;
+    }
+
     private void setDateTime() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
         Timeline clock = new Timeline(
                 new KeyFrame(Duration.ZERO, new EventHandler<ActionEvent>() {
                     public void handle(ActionEvent e) {
@@ -64,12 +69,6 @@ public class MainWindowController extends AbstractController {
         );
         clock.setCycleCount(Animation.INDEFINITE);
         clock.play();
-    }
-
-    public void initialize(URL location, ResourceBundle resources) {
-        setDateTime();
-        List<String> occupiedTables = HibernateQueries.getOccupiedTables();
-        initTablesColor(occupiedTables);
     }
 
     public boolean tableIsOccupied(String tableName, List<String> occupiedTables) {

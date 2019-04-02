@@ -38,7 +38,7 @@ import java.util.ResourceBundle;
 
 public class TableWindowController extends AbstractController {
 
-    public static int tableId;
+    private static int tableId;
     private double total;
     private boolean dividePayment = false;
 
@@ -74,6 +74,10 @@ public class TableWindowController extends AbstractController {
         tableId = Character.getNumericValue(id.charAt(id.length() - 1)) - 1;
         tableLabel.setText("TABLE " + (tableId + 1));
         divideButton.setText("Divide");
+    }
+
+    public static int getTableId(){
+        return tableId;
     }
 
     public void updateTotal(List<OrdersEntity> orders) {
@@ -126,6 +130,7 @@ public class TableWindowController extends AbstractController {
         TablesEntity table = getThisTable();
 
         Query qry = session.createQuery("from OrdersEntity as o left join ItemsEntity as i  on o.item.id=i.id where o.paid=false and o.table=:id");
+        //premenovat nie na id ale na table
         qry.setParameter("id", table);
 
         List l = qry.list();
@@ -191,7 +196,9 @@ public class TableWindowController extends AbstractController {
 
     @FXML
     private void pay() throws Exception {
+        //skusat vymazat Exceptions
         List<OrdersEntity> orders;
+        //toto vytiahnut do metodky, ktora vrati co ma ist do orders
         if (dividePayment) {
             orders = getDividedOrders();
         } else {
@@ -218,6 +225,7 @@ public class TableWindowController extends AbstractController {
     private void addDividePaymentColumn() {
         col4 = new TableColumn("Pay");
         col4.setMinWidth(50);
+        //vytiahnut do zvlast funkcie pre kazdy checkboux
         col4.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<OrderItemEntity, CheckBox>, ObservableValue<CheckBox>>() {
             public ObservableValue<CheckBox> call(
                     TableColumn.CellDataFeatures<OrderItemEntity, CheckBox> arg0) {
@@ -226,6 +234,7 @@ public class TableWindowController extends AbstractController {
                 checkBox.selectedProperty().setValue(temp.getCheckbox());
 
                 checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+                    // vytiahnut do meotodky
                     public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
                         temp.setCheckbox(new_val);
                         updateTotal(getDividedOrders());
@@ -246,6 +255,7 @@ public class TableWindowController extends AbstractController {
     }
 
     private List<OrdersEntity> getDividedOrders() {
+        // nechat
         List<OrdersEntity> orders = new ArrayList<>();
         for (Object row : tableview.getItems()) {
             OrderItemEntity orderItem = (OrderItemEntity) row;
@@ -257,6 +267,7 @@ public class TableWindowController extends AbstractController {
     }
 
     private List<OrderItemEntity> getDividedOrderItems() {
+        //nechat
         List<OrderItemEntity> orderItems = new ArrayList<>();
         for (Object row : tableview.getItems()) {
             OrderItemEntity orderItem = (OrderItemEntity) row;
@@ -279,12 +290,15 @@ public class TableWindowController extends AbstractController {
 
     private void showPopupWindow(List<OrdersEntity> orders) throws Exception {
 
+        //toto keby sa dalo do Abstract Controllera - pre Gabi
         FXMLLoader loader = getSceneLoader(Scenes.POP_UP_WINDOW);
-        Parent root = (Parent) loader.load();
+        Parent root = (Parent) loader.load(); //toto hadze exception
         PopUpController popupController = loader.getController();
 
         Scene scene = new Scene(root);
         Stage popupStage = new Stage();
+
+
         popupStage.initStyle(StageStyle.UNDECORATED);
         if (this.main != null) {
             popupStage.initOwner(main.getPrimaryStage());
@@ -292,19 +306,21 @@ public class TableWindowController extends AbstractController {
         popupController.setStage(popupStage);
         popupController.setPriceToPay(this.total);
         popupController.setOrders(orders);
-        List<OrderItemEntity> bill;
+        List<OrderItemEntity> receipt; //dobre som to premenovala?
+        //vytiahnut ako metodku
         if (dividePayment) {
-            bill = getDividedOrderItems();
+            receipt = getDividedOrderItems();
         } else {
-            bill = this.data;
+            receipt = this.data;
         }
-        popupController.setOrderItems(bill);
+        popupController.setOrderItems(receipt);
         popupController.setTableId(tableId);
         popupStage.initModality(Modality.WINDOW_MODAL);
         popupStage.setScene(scene);
         popupStage.showAndWait();
     }
 
+    //hodit do utils
     class EditingCell extends TableCell<OrderItemEntity, Integer> {
 
         private TextField textField;

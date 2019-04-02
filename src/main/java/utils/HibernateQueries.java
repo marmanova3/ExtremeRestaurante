@@ -26,7 +26,7 @@ public class HibernateQueries {
         return table;
     }
 
-    public static List<OrdersEntity> getAUnpaidOrders(TablesEntity table) {
+    public static List<OrdersEntity> getUnpaidOrdersByTable(TablesEntity table) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
@@ -99,7 +99,7 @@ public class HibernateQueries {
         ItemsEntity item = session.load(ItemsEntity.class, itemId);
 
         boolean newOrder = true;
-        for (OrdersEntity order : HibernateQueries.getAUnpaidOrders(table)) {
+        for (OrdersEntity order : HibernateQueries.getUnpaidOrdersByTable(table)) {
             if (order.getItem().getId() == itemId) {
                 order.setQuantity(order.getQuantity() + 1);
                 newOrder = false;
@@ -132,7 +132,6 @@ public class HibernateQueries {
         session.flush();
         session.getTransaction().commit();
         session.close();
-        session = null;
     }
 
     public static List<OrdersEntity> getOrdersByTable(TablesEntity table){

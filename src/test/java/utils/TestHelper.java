@@ -6,6 +6,8 @@ import model.TablesEntity;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
+import java.util.List;
+
 public class TestHelper {
 
     public static void deleteAllOrders() {
@@ -19,7 +21,7 @@ public class TestHelper {
         session.close();
     }
 
-    public static void insertTableOrder(int itemId, int tableId, boolean paid, int quantity) {
+    public static OrdersEntity insertTableOrder(int itemId, int tableId, boolean paid, int quantity) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
@@ -36,6 +38,8 @@ public class TestHelper {
 
         session.getTransaction().commit();
         session.close();
+
+        return order;
     }
 
     public static int insertTableOrder(OrdersEntity order) {
@@ -52,9 +56,7 @@ public class TestHelper {
 
     public static TablesEntity getTable(int tableId) {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
         TablesEntity table = session.load(TablesEntity.class, tableId);
-        session.getTransaction().commit();
         session.close();
 
         return table;
@@ -62,11 +64,39 @@ public class TestHelper {
 
     public static ItemsEntity getItem(int itemId) {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
         ItemsEntity item = session.load(ItemsEntity.class, itemId);
-        session.getTransaction().commit();
         session.close();
 
         return item;
+    }
+
+
+    public static String getNumberOfOrdersForTable(TablesEntity table) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        Query qry = session.createQuery("SELECT count(*) FROM OrdersEntity o WHERE o.table =:table");
+        qry.setParameter("table", table);
+
+        Long countRows = (Long) qry.uniqueResult();
+
+        session.getTransaction().commit();
+        session.close();
+
+        return countRows.toString();
+    }
+
+    public static List<OrdersEntity> getAllPaidOrders() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        Query query = session.createQuery("from OrdersEntity where paid=true");
+
+        List<OrdersEntity> orders = query.list();
+
+        session.getTransaction().commit();
+        session.close();
+
+        return orders;
     }
 }

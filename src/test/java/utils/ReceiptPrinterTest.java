@@ -125,10 +125,10 @@ public class ReceiptPrinterTest {
         String items = "";
         items += "* Polievka                   *\n";
         items += "* 3 x 5.25                   *\n";
-        items += "*                      15.75 *\n";
+        items += "*                      15,75 *\n";
         items += "* Cola                       *\n";
         items += "* 2 x 1.25                   *\n";
-        items += "*                        2.5 *\n";
+        items += "*                        2,5 *\n";
         assertEquals(items, ReceiptPrinter.receiptItems(30, itemList));
     }
 

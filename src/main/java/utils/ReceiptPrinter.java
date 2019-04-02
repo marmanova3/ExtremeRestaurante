@@ -54,8 +54,8 @@ public class ReceiptPrinter {
         for (OrderItemEntity item : orderItems) {
             items += createReceiptLine(lineWidth, " " + item.getName());
             items += createReceiptLine(lineWidth, " " + item.getQuantity() + " x " + item.getPrice());
-            Double price = item.getQuantity() * item.getPrice();
-            items += createReceiptRightAlignLine(lineWidth, Double.toString(price) + " ");
+            String price = String.format("%.2f", item.getQuantity() * item.getPrice());
+            items += createReceiptRightAlignLine(lineWidth, price + " ");
         }
         return items;
     }

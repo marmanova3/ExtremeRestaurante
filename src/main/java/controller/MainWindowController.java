@@ -33,12 +33,15 @@ public class MainWindowController extends AbstractController {
     @FXML
     private Pane groupsPane;
 
-    final List<String> occupiedTables = HibernateQueries.getOccupiedTables();
     private static String clickedTable;
 
     private String FREE_TABLE_COLOR = "#288e28";
     private String OCCUPIED_TABLE_COLOR = "#e1901e";
 
+
+    public static String getClickedTable() {
+        return clickedTable;
+    }
 
     @FXML
     private void handleTableClickAction(MouseEvent event) throws Exception {
@@ -47,8 +50,6 @@ public class MainWindowController extends AbstractController {
         clickedTable = table.getId();
 
         redirect(Scenes.TABLE_WINDOW);
-
-        System.out.println(table.getId() + " was clicked.");
     }
 
     private void setDateTime() {
@@ -65,55 +66,62 @@ public class MainWindowController extends AbstractController {
         clock.play();
     }
 
-    private boolean tableIsOccupied(String tableNumber) {
-        return occupiedTables.contains(tableNumber);
+    public void initialize(URL location, ResourceBundle resources) {
+        setDateTime();
+        List<String> occupiedTables = HibernateQueries.getOccupiedTables();
+        initTablesColor(occupiedTables);
     }
 
-    private String parseGroupName(String groupId) {
+    public boolean tableIsOccupied(String tableName, List<String> occupiedTables) {
+        return occupiedTables.contains(tableName);
+    }
+
+    public String parseTableName(String groupId) {
+        if (groupId.length() < 4) {
+            return "";
+        }
         return groupId.substring(3);
     }
 
-    private void setRectangleTableColor(Rectangle rectangle, String tableName) {
-        if (tableIsOccupied(parseGroupName(tableName))) {
+    private void setRectangleTableColor(Rectangle rectangle, String tableName, List<String> occupiedTables) {
+        if (tableIsOccupied(tableName, occupiedTables)) {
             rectangle.setFill(Color.web(OCCUPIED_TABLE_COLOR));
         } else {
             rectangle.setFill(Color.web(FREE_TABLE_COLOR));
         }
     }
 
-    public static String getClickedTable(){
-        return clickedTable;
-    }
-
-    private void setCircleTableColor(Circle circle, String tableName) {
-        if (tableIsOccupied(parseGroupName(tableName))) {
+    private void setCircleTableColor(Circle circle, String tableName, List<String> occupiedTables) {
+        if (tableIsOccupied(tableName, occupiedTables)) {
             circle.setFill(Color.web(OCCUPIED_TABLE_COLOR));
         } else {
             circle.setFill(Color.web(FREE_TABLE_COLOR));
         }
+
     }
 
-    private void setTableColor(Group tableGroup) {
+    private void setTableColor(Group tableGroup, List<String> occupiedTables) {
         Node tableShape = tableGroup.getChildren().get(0);
-        if (tableShape != null) {
+        if (tableShape != null && tableNameIsValid(tableGroup.getId())) {
             if (tableShape instanceof Rectangle) {
-                setRectangleTableColor((Rectangle) tableShape, tableGroup.getId());
+                setRectangleTableColor((Rectangle) tableShape, parseTableName(tableGroup.getId()), occupiedTables);
             } else if (tableShape instanceof Circle) {
-                setCircleTableColor((Circle) tableShape, tableGroup.getId());
+                setCircleTableColor((Circle) tableShape, parseTableName(tableGroup.getId()), occupiedTables);
             }
         }
     }
 
-    private void initTablesColor() {
+    public boolean tableNameIsValid(String groupId) {
+        String tableName = parseTableName(groupId);
+        return tableName != "";
+    }
+
+    private void initTablesColor(List<String> occupiedTables) {
         for (Node tableGroup : groupsPane.getChildren()) {
             if (tableGroup instanceof Group) {
-                setTableColor((Group) tableGroup);
+                setTableColor((Group) tableGroup, occupiedTables);
             }
         }
     }
 
-    public void initialize(URL location, ResourceBundle resources) {
-        setDateTime();
-        initTablesColor();
-    }
 }

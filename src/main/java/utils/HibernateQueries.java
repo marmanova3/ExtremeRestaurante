@@ -134,7 +134,7 @@ public class HibernateQueries {
         session.close();
     }
 
-    public static ObservableList<OrderItemEntity> getOrderItemsEntitiesByTable(TablesEntity table){
+    public static ObservableList<OrderItemEntity> getUnpaidOrderItemsEntitiesByTable(TablesEntity table) {
         ObservableList<OrderItemEntity> orderItemEntities = FXCollections.observableArrayList();
 
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -184,4 +184,5 @@ public class HibernateQueries {
         session.getTransaction().commit();
         session.close();
     }
+
 }

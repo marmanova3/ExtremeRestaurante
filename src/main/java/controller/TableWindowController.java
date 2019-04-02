@@ -154,7 +154,7 @@ public class TableWindowController extends AbstractController {
     }
 
     private void fillTableView(){
-        orderItemEntities = HibernateQueries.getOrderItemsEntitiesByTable(table);
+        orderItemEntities = HibernateQueries.getUnpaidOrderItemsEntitiesByTable(table);
         tableview.setItems(orderItemEntities);
     }
 
@@ -187,7 +187,7 @@ public class TableWindowController extends AbstractController {
         dividePayment = false;
     }
 
-    private char getLastCharacter(String input){
+    public char getLastCharacter(String input) {
         return input.length() > 0 ? input.charAt(input.length() - 1) : ' ';
     }
 
@@ -197,10 +197,10 @@ public class TableWindowController extends AbstractController {
 
     public void updateTotal(List<OrdersEntity> orders) {
         total = getTotalCountOfOrders(orders);
-        priceTotal.setText(String.valueOf(total) + " €");
+        priceTotal.setText(total + " €");
     }
 
-    private double getTotalCountOfOrders(List<OrdersEntity> orders){
+    public double getTotalCountOfOrders(List<OrdersEntity> orders) {
         double sum = 0;
         for (OrdersEntity order : orders) {
             sum += order.getPrice() * order.getQuantity();

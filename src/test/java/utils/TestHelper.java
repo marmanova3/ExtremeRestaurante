@@ -1,6 +1,7 @@
 package utils;
 
 import model.ItemsEntity;
+import model.OrderItemEntity;
 import model.OrdersEntity;
 import model.TablesEntity;
 import org.hibernate.Session;
@@ -98,5 +99,16 @@ public class TestHelper {
         session.close();
 
         return orders;
+    }
+
+    public static OrderItemEntity createOrderItemEntity(OrdersEntity order, ItemsEntity item) {
+        OrderItemEntity orderItemEntity = new OrderItemEntity();
+        orderItemEntity.setOrderId(order.getId());
+        orderItemEntity.setName(item.getName());
+        orderItemEntity.setPrice(order.getPrice());
+        orderItemEntity.setQuantity(order.getQuantity());
+        orderItemEntity.setCheckbox(false);
+
+        return orderItemEntity;
     }
 }

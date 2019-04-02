@@ -119,4 +119,20 @@ public class HibernateQueries {
 
         return items;
     }
+
+    public static void payOrders(List<OrdersEntity> orders){
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        for (OrdersEntity order : orders) {
+            order.setPaid(true);
+            session.update(order);
+            session.save(order);
+        }
+
+        session.flush();
+        session.getTransaction().commit();
+        session.close();
+        session = null;
+    }
 }

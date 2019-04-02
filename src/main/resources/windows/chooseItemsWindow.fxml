@@ -15,7 +15,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" stylesheets="@stylesheets/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ChooseItemsController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" stylesheets="@stylesheets/style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ChooseItemsController">
     <top>
         <HBox prefHeight="58.0" prefWidth="900.0" style="-fx-background-color: #212121;" BorderPane.alignment="CENTER">
             <children>
@@ -191,12 +191,12 @@
                </children>
             </VBox>
             <Line endX="-475.0" endY="510.0" layoutX="732.0" layoutY="17.0" startX="-475.0" stroke="WHITE" strokeWidth="2.0" />
-            <ScrollPane layoutX="276.0" layoutY="24.0">
+            <ScrollPane hbarPolicy="NEVER" layoutX="276.0" layoutY="24.0" style="-fx-border-width: 0; -fx-background-color: #212121 #212121;">
                <content>
-                  <FlowPane fx:id="flowPane" prefHeight="468.0" prefWidth="601.0" style="-fx-background-color: #212121 #212121;" />
+                  <FlowPane fx:id="flowPane" prefHeight="468.0" prefWidth="601.0" style="-fx-background-color: #212121 #212121; -fx-border-width: 0;" />
                </content>
             </ScrollPane>
-            <Label layoutX="276.0" layoutY="500.0" text="*Double click to add an item" textFill="WHITE" />
+            <Label layoutX="276.0" layoutY="500.0" text="*Click to add an item" textFill="WHITE" />
          </children>
         </Pane>
    </center>

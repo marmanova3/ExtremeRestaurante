@@ -134,21 +134,6 @@ public class HibernateQueries {
         session.close();
     }
 
-    public static List<OrdersEntity> getOrdersByTable(TablesEntity table){
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
-
-        Query query = session.createQuery("from OrdersEntity where paid=false and table=:table");
-        query.setParameter("table", table);
-
-        List orders = query.list();
-
-        session.getTransaction().commit();
-        session.close();
-
-        return orders;
-    }
-
     public static ObservableList<OrderItemEntity> getOrderItemsEntitiesByTable(TablesEntity table){
         ObservableList<OrderItemEntity> orderItemEntities = FXCollections.observableArrayList();
 

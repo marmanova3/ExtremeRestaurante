@@ -44,7 +44,7 @@ public class MainWindowController extends AbstractController {
     }
 
     @FXML
-    private void handleTableClickAction(MouseEvent event) throws Exception {
+    private void handleTableClickAction(MouseEvent event) {
         Group table = (Group) event.getSource();
 
         clickedTable = table.getId();
@@ -97,7 +97,6 @@ public class MainWindowController extends AbstractController {
         } else {
             circle.setFill(Color.web(FREE_TABLE_COLOR));
         }
-
     }
 
     private void setTableColor(Group tableGroup, List<String> occupiedTables) {

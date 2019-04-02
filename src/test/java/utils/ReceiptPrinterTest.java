@@ -32,7 +32,7 @@ public class ReceiptPrinterTest {
     }
 
     @Test
-    public void shouldReturnReceiptCenteresLineWithEvenContentSize() {
+    public void shouldReturnReceiptCenteredLineWithEvenContentSize() {
         String line = "* Ahoj *\n";
         assertEquals(line, ReceiptPrinter.createReceiptCenterLine(8, "Ahoj"));
     }
@@ -128,7 +128,7 @@ public class ReceiptPrinterTest {
         items += "*                      15,75 *\n";
         items += "* Cola                       *\n";
         items += "* 2 x 1.25                   *\n";
-        items += "*                        2,5 *\n";
+        items += "*                       2,50 *\n";
         assertEquals(items, ReceiptPrinter.receiptItems(30, itemList));
     }
 

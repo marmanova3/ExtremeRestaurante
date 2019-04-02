@@ -185,4 +185,24 @@ public class HibernateQueries {
         session.close();
     }
 
+    public static void deleteOrderById(int orderId) {
+        final Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        OrdersEntity order = session.load(OrdersEntity.class, orderId);
+        session.remove(order);
+
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    public static void deleteOrderEntityById(OrdersEntity order) {
+        final Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        session.remove(order);
+
+        session.getTransaction().commit();
+        session.close();
+    }
 }

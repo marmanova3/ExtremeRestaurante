@@ -33,7 +33,7 @@ public class MainWindowController extends AbstractController {
     @FXML
     private Pane groupsPane;
 
-    final List<String> occupiedTables = HibernateQueries.findOccupiedTables();
+    final List<String> occupiedTables = HibernateQueries.getOccupiedTables();
     public static String clickedTable;
 
     private String FREE_TABLE_COLOR = "#288e28";

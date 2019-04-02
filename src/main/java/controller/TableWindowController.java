@@ -63,6 +63,7 @@ public class TableWindowController extends AbstractController {
     }
 
     private TablesEntity getThisTable() {
+        //G - mam pocit ze toto uz je v Queries
         Session session = HibernateUtil.getSessionFactory().openSession();
         TablesEntity table = session.load(TablesEntity.class, tableId);
         session.close();
@@ -260,7 +261,7 @@ public class TableWindowController extends AbstractController {
         for (Object row : tableview.getItems()) {
             OrderItemEntity orderItem = (OrderItemEntity) row;
             if (orderItem.getCheckbox()) {
-                orders.add(HibernateQueries.getOrder(orderItem.getOrderId()));
+                orders.add(HibernateQueries.getOrderById(orderItem.getOrderId()));
             }
         }
         return orders;

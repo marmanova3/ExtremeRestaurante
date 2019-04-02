@@ -13,14 +13,36 @@ import java.util.List;
 
 public class HibernateQueries {
 
-    public static OrdersEntity getOrder(int orderId) {
+    public static OrdersEntity getOrderById(int orderId) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         OrdersEntity order = session.load(OrdersEntity.class, orderId);
         session.close();
         return order;
     }
 
-    public static List<String> findOccupiedTables(){
+    public static TablesEntity getTableById(int tableId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        TablesEntity table = session.load(TablesEntity.class, tableId);
+        session.close();
+        return table;
+    }
+
+    public static List<OrdersEntity> getAUnpaidOrders(TablesEntity table) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        Query query = session.createQuery("from OrdersEntity where paid=false and table=:table");
+        query.setParameter("table", table);
+
+        List<OrdersEntity> orders = query.list();
+
+        session.getTransaction().commit();
+        session.close();
+
+        return orders;
+    }
+
+    public static List<String> getOccupiedTables() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
@@ -41,55 +63,6 @@ public class HibernateQueries {
         session.close();
 
         return occupiedTablesNames;
-    }
-
-    public static List<OrdersEntity> getOrders(TablesEntity table) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
-
-        Query query = session.createQuery("from OrdersEntity where paid=false and table=:table");
-        query.setParameter("table", table);
-
-        List<OrdersEntity> orders = query.list();
-
-        session.getTransaction().commit();
-        session.close();
-
-        return orders;
-    }
-
-    public static void addItemToTableOrders(int itemId, TablesEntity table) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
-
-        ItemsEntity item = session.load(ItemsEntity.class, itemId);
-
-        boolean newOrder = true;
-        for (OrdersEntity order : HibernateQueries.getOrders(table)) {
-            if (order.getItem().getId() == itemId) {
-                order.setQuantity(order.getQuantity() + 1);
-                newOrder = false;
-                session.update(order);
-            }
-        }
-        if (newOrder) {
-            OrdersEntity order = new OrdersEntity();
-            order.setPaid(false);
-            order.setItem(item);
-            order.setPrice(item.getPrice());
-            order.setTable(table);
-            order.setQuantity(1);
-            session.save(order);
-        }
-        session.getTransaction().commit();
-        session.close();
-    }
-
-    public static TablesEntity getTableById(int tableId){
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        TablesEntity table = session.load(TablesEntity.class, tableId);
-        session.close();
-        return table;
     }
 
     public static List<ItemsEntity> getItemsByCategoryId(int categoryId) {
@@ -118,6 +91,33 @@ public class HibernateQueries {
         session.close();
 
         return items;
+    }
+
+    public static void addItemToTableOrders(int itemId, TablesEntity table) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        ItemsEntity item = session.load(ItemsEntity.class, itemId);
+
+        boolean newOrder = true;
+        for (OrdersEntity order : HibernateQueries.getAUnpaidOrders(table)) {
+            if (order.getItem().getId() == itemId) {
+                order.setQuantity(order.getQuantity() + 1);
+                newOrder = false;
+                session.update(order);
+            }
+        }
+        if (newOrder) {
+            OrdersEntity order = new OrdersEntity();
+            order.setPaid(false);
+            order.setItem(item);
+            order.setPrice(item.getPrice());
+            order.setTable(table);
+            order.setQuantity(1);
+            session.save(order);
+        }
+        session.getTransaction().commit();
+        session.close();
     }
 
     public static void payOrders(List<OrdersEntity> orders){

@@ -12,8 +12,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -22,10 +20,8 @@ import javafx.util.Callback;
 import model.OrderItemEntity;
 import model.OrdersEntity;
 import model.TablesEntity;
-import org.hibernate.Session;
 import utils.EditingCell;
 import utils.HibernateQueries;
-import utils.HibernateUtil;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -77,7 +73,7 @@ public class TableWindowController extends AbstractController {
     }
 
     @FXML
-    private void pay() throws Exception {
+    private void pay() {
         List<OrdersEntity> ordersToPay = getOrdersByDividePayment();
         showPopupWindow(ordersToPay);
         reload();
@@ -214,7 +210,7 @@ public class TableWindowController extends AbstractController {
     }
 
     public List<OrdersEntity> getOrders() {
-        return HibernateQueries.getOrdersByTable(table);
+        return HibernateQueries.getUnpaidOrdersByTable(table);
     }
 
     public void updateOrderByQuantity(OrderItemEntity orderItemEntity) {
@@ -253,11 +249,9 @@ public class TableWindowController extends AbstractController {
         return orderItems;
     }
 
-    private void showPopupWindow(List<OrdersEntity> ordersToPay) throws Exception {
-
-        //toto keby sa dalo do Abstract Controllera - pre Gabi
+    private void showPopupWindow(List<OrdersEntity> ordersToPay) {
         FXMLLoader loader = getSceneLoader(Scenes.POP_UP_WINDOW);
-        Parent root = (Parent) loader.load(); //toto hadze exception
+        Parent root = getParent(loader);
         PopUpController popupController = loader.getController();
 
         Scene scene = new Scene(root);

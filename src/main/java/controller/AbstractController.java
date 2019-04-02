@@ -24,15 +24,19 @@ public abstract class AbstractController implements Initializable {
 
     public void redirect(Scenes scene) {
         FXMLLoader loader = getSceneLoader(scene);
+        Parent root = getParent(loader);
+        Stage stage = Main.mainStage;
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+
+    public Parent getParent(FXMLLoader loader) {
         Parent root = null;
         try {
             root = (Parent) loader.load();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        Stage stage = Main.mainStage;
-        stage.setScene(new Scene(root));
-        stage.show();
+        return root;
     }
 }

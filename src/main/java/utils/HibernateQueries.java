@@ -196,7 +196,7 @@ public class HibernateQueries {
         session.close();
     }
 
-    public static void deleteOrderEntityById(OrdersEntity order) {
+    public static void deleteOrderEntity(OrdersEntity order) {
         final Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 

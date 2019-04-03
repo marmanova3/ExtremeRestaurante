@@ -9,6 +9,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -37,6 +38,7 @@ public class TableWindowController extends AbstractController {
 
     private static final String QUANTITY_COLUMN_NAME = "Quantity";
     private static final String PAY_COLUMN_NAME = "Pay";
+    private static final String REMOVE_COLUMN_NAME = "Remove";
     private static final int QUANTITY_COLUMN_WIDTH = 75;
     private static final int PAY_COLUMN_WIDTH = 50;
 
@@ -48,7 +50,7 @@ public class TableWindowController extends AbstractController {
 
     @FXML private Label tableLabel, priceTotal;
     @FXML private TableView tableview;
-    @FXML private TableColumn col1, col2, col3, col4;
+    @FXML private TableColumn col1, col2, col3, col4, col5;
     @FXML private Button divideButton;
 
 
@@ -57,6 +59,7 @@ public class TableWindowController extends AbstractController {
         setTableEntity();
         setDefaultDivideInfo();
         addQuantityColumn();
+        addRemoveColumn();
         setTableViewAttributes();
         fillTableView();
         updateTotal(getOrders());
@@ -131,6 +134,14 @@ public class TableWindowController extends AbstractController {
         tableview.getColumns().addAll(col4);
     }
 
+    private void addRemoveColumn() {
+        col5 = new TableColumn(REMOVE_COLUMN_NAME);
+        col5.setMinWidth(PAY_COLUMN_WIDTH);
+        col5.setStyle(TABLE_COLUMN_STYLE);
+        addRemoveButtonsToColumn(col5);
+        tableview.getColumns().addAll(col5);
+    }
+
     private void addCheckboxesToColumn(TableColumn tableColumn){
         tableColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<OrderItemEntity, CheckBox>, ObservableValue<CheckBox>>() {
             public ObservableValue<CheckBox> call(TableColumn.CellDataFeatures<OrderItemEntity, CheckBox> arg0) {
@@ -152,6 +163,27 @@ public class TableWindowController extends AbstractController {
             }
         });
     }
+
+    private void addRemoveButtonsToColumn(TableColumn tableColumn) {
+        tableColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<OrderItemEntity, Button>, ObservableValue<Button>>() {
+            public ObservableValue<Button> call(TableColumn.CellDataFeatures<OrderItemEntity, Button> arg0) {
+                OrderItemEntity orderItemEntity = arg0.getValue();
+                Button button = new Button(REMOVE_COLUMN_NAME);
+                button.setId(Integer.toString(orderItemEntity.getOrderId()));
+                button.setAlignment(Pos.CENTER);
+                button.setCursor(Cursor.HAND);
+                button.setOnMouseClicked(event ->
+                        removeOrderItem(orderItemEntity.getOrderId()));
+                return new SimpleObjectProperty<Button>(button);
+            }
+        });
+    }
+
+    private void removeOrderItem(int orderId) {
+        HibernateQueries.deleteOrderById(orderId);
+        fillTableView();
+    }
+
 
     private void fillTableView(){
         orderItemEntities = HibernateQueries.getUnpaidOrderItemsEntitiesByTable(table);

@@ -195,14 +195,4 @@ public class HibernateQueries {
         session.getTransaction().commit();
         session.close();
     }
-
-    public static void deleteOrderEntity(OrdersEntity order) {
-        final Session session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
-
-        session.remove(order);
-
-        session.getTransaction().commit();
-        session.close();
-    }
 }

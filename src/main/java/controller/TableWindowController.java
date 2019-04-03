@@ -184,7 +184,6 @@ public class TableWindowController extends AbstractController {
         fillTableView();
     }
 
-
     private void fillTableView(){
         orderItemEntities = HibernateQueries.getUnpaidOrderItemsEntitiesByTable(table);
         tableview.setItems(orderItemEntities);

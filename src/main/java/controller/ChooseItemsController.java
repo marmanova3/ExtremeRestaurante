@@ -15,6 +15,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import model.ItemsEntity;
 import model.TablesEntity;
 import utils.HibernateQueries;
@@ -164,6 +165,8 @@ public class ChooseItemsController extends AbstractController implements Initial
         flowPane.getChildren().clear();
         for (ItemsEntity item : menuItems) {
             Button button = new Button(item.getName());
+            button.wrapTextProperty().setValue(true);
+            button.setTextAlignment(TextAlignment.CENTER);
             button.setPrefSize(ITEM_BUTTON_WIDTH, ITEM_BUTTON_HEIGHT);
             button.setBackground(
                     new Background(

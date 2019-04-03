@@ -40,17 +40,18 @@
     <center>
         <Pane prefHeight="542.0" prefWidth="900.0" style="-fx-background-color: #212121;" BorderPane.alignment="CENTER">
             <children>
-                <ScrollPane hbarPolicy="NEVER" layoutX="22.0" prefHeight="520.0" prefWidth="586.0" style="-fx-background-color: #333333;" vbarPolicy="NEVER">
+                <ScrollPane hbarPolicy="NEVER" layoutX="22.0" prefHeight="520.0" prefWidth="584.0"
+                            style="-fx-background-color: #333333;" vbarPolicy="NEVER">
                     <content>
-                        <TableView fx:id="tableview" layoutX="202.0" layoutY="-6.0" prefHeight="519.0" prefWidth="584.0"
+                        <TableView fx:id="tableview" layoutX="202.0" layoutY="-6.0" prefHeight="519.0" prefWidth="583.0"
                                    style="-fx-background-color: 212121;">
                             <columns>
-                                <TableColumn fx:id="col1" prefWidth="268.0" text="Name">
+                                <TableColumn fx:id="col1" prefWidth="308.0" minWidth="308.0" text="Name">
                                     <cellValueFactory>
                                         <PropertyValueFactory property="name" />
                                     </cellValueFactory>
                                 </TableColumn>
-                                <TableColumn fx:id="col2" minWidth="7.0" prefWidth="102.0" text="Price">
+                                <TableColumn fx:id="col2" minWidth="65.0" prefWidth="65.0" text="Price">
                                     <cellValueFactory>
                                         <PropertyValueFactory property="price" />
                                     </cellValueFactory>

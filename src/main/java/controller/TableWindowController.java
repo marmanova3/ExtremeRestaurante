@@ -8,12 +8,18 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -33,14 +39,18 @@ public class TableWindowController extends AbstractController {
 
     private static final String BUTTON_TEXT_DIVIDE = "Divide";
     private static final String BUTTON_TEXT_CANCEL = "Cancel";
-    private static final String TABLE_COLUMN_STYLE = "-fx-background-color: black; -fx-text-fill: white";
+    private static final String TABLE_COLUMN_STYLE1 = "-fx-background-color: black; -fx-text-fill: white;";
+    private static final String TABLE_COLUMN_STYLE2 = "-fx-background-color: black; -fx-text-fill: white; -fx-alignment: CENTER;";
     private static final String TABLE_VIEW_STYLE = "-fx-background-color: black";
+    private static final String COLOR_WHITE = "#ffffff";
+    private static final String COLOR_DARK = "#333333";
 
     private static final String QUANTITY_COLUMN_NAME = "Quantity";
     private static final String PAY_COLUMN_NAME = "Pay";
     private static final String REMOVE_COLUMN_NAME = "Remove";
     private static final int QUANTITY_COLUMN_WIDTH = 75;
     private static final int PAY_COLUMN_WIDTH = 50;
+    private static final int REMOVE_COLUMN_WIDTH = 85;
 
     private static int tableId;
     private double total;
@@ -50,7 +60,8 @@ public class TableWindowController extends AbstractController {
 
     @FXML private Label tableLabel, priceTotal;
     @FXML private TableView tableview;
-    @FXML private TableColumn col1, col2, col3, col4, col5;
+    @FXML
+    private TableColumn col1, col2, col3, col4, col5, emptyColumn;
     @FXML private Button divideButton;
 
 
@@ -60,6 +71,7 @@ public class TableWindowController extends AbstractController {
         setDefaultDivideInfo();
         addQuantityColumn();
         addRemoveColumn();
+        addEmptyColumn();
         setTableViewAttributes();
         fillTableView();
         updateTotal(getOrders());
@@ -87,11 +99,13 @@ public class TableWindowController extends AbstractController {
         dividePayment = !dividePayment;
         if (dividePayment) {
             divideButton.setText(BUTTON_TEXT_CANCEL);
+            removeEmptyColumn();
             addDividePaymentColumn();
             updateTotal(getDividedOrders());
         } else {
             divideButton.setText(BUTTON_TEXT_DIVIDE);
             removeDividePaymentColumn();
+            addEmptyColumn();
             updateTotal(getOrders());
         }
     }
@@ -99,9 +113,11 @@ public class TableWindowController extends AbstractController {
     private void setTableViewAttributes(){
         tableview.setEditable(true);
         tableview.setStyle(TABLE_VIEW_STYLE);
-        col1.setStyle(TABLE_COLUMN_STYLE);
-        col2.setStyle(TABLE_COLUMN_STYLE);
-        col3.setStyle(TABLE_COLUMN_STYLE);
+        col1.setStyle(TABLE_COLUMN_STYLE1);
+        col1.setPrefWidth(308);
+        col2.setPrefWidth(65);
+        col2.setStyle(TABLE_COLUMN_STYLE1);
+        col3.setStyle(TABLE_COLUMN_STYLE1);
     }
 
     private void addQuantityColumn(){
@@ -129,15 +145,22 @@ public class TableWindowController extends AbstractController {
     private void addDividePaymentColumn() {
         col4 = new TableColumn(PAY_COLUMN_NAME);
         col4.setMinWidth(PAY_COLUMN_WIDTH);
-        col4.setStyle(TABLE_COLUMN_STYLE);
+        col4.setStyle(TABLE_COLUMN_STYLE2);
         addCheckboxesToColumn(col4);
         tableview.getColumns().addAll(col4);
     }
 
+    private void addEmptyColumn() {
+        emptyColumn = new TableColumn(PAY_COLUMN_NAME);
+        emptyColumn.setMinWidth(PAY_COLUMN_WIDTH);
+        emptyColumn.setStyle(TABLE_COLUMN_STYLE2);
+        tableview.getColumns().addAll(emptyColumn);
+    }
+
     private void addRemoveColumn() {
         col5 = new TableColumn(REMOVE_COLUMN_NAME);
-        col5.setMinWidth(PAY_COLUMN_WIDTH);
-        col5.setStyle(TABLE_COLUMN_STYLE);
+        col5.setMinWidth(REMOVE_COLUMN_WIDTH);
+        col5.setStyle(TABLE_COLUMN_STYLE2);
         addRemoveButtonsToColumn(col5);
         tableview.getColumns().addAll(col5);
     }
@@ -169,6 +192,12 @@ public class TableWindowController extends AbstractController {
             public ObservableValue<Button> call(TableColumn.CellDataFeatures<OrderItemEntity, Button> arg0) {
                 OrderItemEntity orderItemEntity = arg0.getValue();
                 Button button = new Button(REMOVE_COLUMN_NAME);
+                button.setTextFill(Paint.valueOf(COLOR_WHITE));
+                button.setBackground(
+                        new Background(
+                                new BackgroundFill(Color.web(COLOR_DARK),
+                                        CornerRadii.EMPTY,
+                                        Insets.EMPTY)));
                 button.setId(Integer.toString(orderItemEntity.getOrderId()));
                 button.setAlignment(Pos.CENTER);
                 button.setCursor(Cursor.HAND);
@@ -254,7 +283,11 @@ public class TableWindowController extends AbstractController {
     }
 
     private void removeDividePaymentColumn() {
-        tableview.getColumns().remove(3);
+        tableview.getColumns().remove(4);
+    }
+
+    private void removeEmptyColumn() {
+        tableview.getColumns().remove(4);
     }
 
     private List<OrdersEntity> getDividedOrders() {

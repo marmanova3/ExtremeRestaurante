@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" stylesheets="@stylesheets/style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ChooseItemsController">
+    <top>
+        <HBox prefHeight="58.0" prefWidth="900.0" style="-fx-background-color: #212121;" BorderPane.alignment="CENTER">
+            <children>
+            <ImageView fitHeight="40.0" fitWidth="50.0" onMouseClicked="#handleBackAction" pickOnBounds="true" preserveRatio="true" rotate="180.0">
+               <image>
+                  <Image url="@assets/left_arrow.png" />
+               </image>
+               <HBox.margin>
+                  <Insets left="10.0" top="10.0" />
+               </HBox.margin>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </ImageView>
+                <Label fx:id="tableLabel" alignment="CENTER_RIGHT" prefHeight="58.0" prefWidth="859.0" text="TABLE 4" textFill="WHITE">
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                    <padding>
+                        <Insets left="20.0" right="20.0" />
+                    </padding>
+                    <font>
+                        <Font size="30.0" />
+                    </font>
+                </Label>
+            </children>
+            <opaqueInsets>
+                <Insets />
+            </opaqueInsets>
+        </HBox>
+    </top>
+   <center>
+        <Pane prefHeight="542.0" prefWidth="900.0" style="-fx-background-color: #212121;" BorderPane.alignment="CENTER">
+         <children>
+            <Line endX="162.0" layoutX="722.0" layoutY="2.0" startX="-705.0" stroke="WHITE" strokeWidth="2.0" />
+            <VBox fx:id="categoryGroup" layoutX="16.0" layoutY="27.0" prefHeight="473.0" prefWidth="216.0">
+               <children>
+                  <Button fx:id="drinks" alignment="TOP_LEFT" mnemonicParsing="false" onMouseClicked="#handleMenuItemsDrinks" prefHeight="62.0" prefWidth="195.0" style="-fx-background-color: #333333 #333333;" styleClass="btn-category" text="Drinks" textFill="WHITE">
+                     <graphic>
+                        <ImageView fitHeight="50.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@assets/7.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+                  <Button fx:id="mainCourse" alignment="TOP_LEFT" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onMouseClicked="#handleMenuItemsMainCourse" prefHeight="62.0" prefWidth="195.0" style="-fx-background-color: #333333;" styleClass="btn-category" text="Main courses" textFill="WHITE">
+                     <graphic>
+                        <ImageView fitHeight="50.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@assets/2.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+                  <Button fx:id="soups" alignment="TOP_LEFT" layoutX="10.0" layoutY="72.0" mnemonicParsing="false" onMouseClicked="#handleMenuItemsSoups" prefHeight="62.0" prefWidth="195.0" style="-fx-background-color: #333333;" styleClass="btn-category" text="Soups" textFill="WHITE">
+                     <graphic>
+                        <ImageView fitHeight="50.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@assets/0.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+                  <Button fx:id="desserts" alignment="TOP_LEFT" layoutX="10.0" layoutY="160.0" mnemonicParsing="false" onMouseClicked="#handleMenuItemsDesserts" prefHeight="39.0" prefWidth="196.0" style="-fx-background-color: #333333;" styleClass="btn-category" text="Desserts" textFill="WHITE">
+                     <graphic>
+                        <ImageView fitHeight="50.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@assets/3.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+                  <Button fx:id="pasta" alignment="TOP_LEFT" layoutX="10.0" layoutY="226.0" mnemonicParsing="false" onMouseClicked="#handleMenuItemsPasta" prefHeight="39.0" prefWidth="196.0" style="-fx-background-color: #333333;" styleClass="btn-category" text="Pasta" textFill="WHITE">
+                     <graphic>
+                        <ImageView fitHeight="50.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@assets/5.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+                  <Button fx:id="pizza" alignment="TOP_LEFT" layoutX="10.0" layoutY="298.0" mnemonicParsing="false" onMouseClicked="#handleMenuItemsPizza" prefHeight="39.0" prefWidth="196.0" style="-fx-background-color: #333333;" styleClass="btn-category" text="Pizza" textFill="WHITE">
+                     <graphic>
+                        <ImageView fitHeight="50.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@assets/6.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+                  <Button fx:id="sideDishes" alignment="TOP_LEFT" layoutX="10.0" layoutY="370.0" mnemonicParsing="false" onMouseClicked="#handleMenuItemsSideDish" prefHeight="39.0" prefWidth="196.0" style="-fx-background-color: #333333;" styleClass="btn-category" text="Side dish" textFill="WHITE">
+                     <graphic>
+                        <ImageView fitHeight="50.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@assets/4.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+               </children>
+            </VBox>
+            <Line endX="-475.0" endY="510.0" layoutX="732.0" layoutY="17.0" startX="-475.0" stroke="WHITE" strokeWidth="2.0" />
+            <ScrollPane hbarPolicy="NEVER" layoutX="276.0" layoutY="24.0" style="-fx-border-width: 0; -fx-background-color: #212121 #212121;">
+               <content>
+                  <FlowPane fx:id="flowPane" prefHeight="468.0" prefWidth="601.0" style="-fx-background-color: #212121 #212121; -fx-border-width: 0;" />
+               </content>
+            </ScrollPane>
+            <Label layoutX="276.0" layoutY="500.0" text="*Click to add an item" textFill="WHITE" />
+         </children>
+        </Pane>
+   </center>
+</BorderPane>

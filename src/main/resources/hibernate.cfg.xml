@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://dumbo.db.elephantsql.com:5432/pxisnitl</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL9Dialect</property>
+        <property name="hibernate.connection.username">pxisnitl</property>
+        <property name="hibernate.connection.password">ympvv0KwfdIt4OicG93V2NLXfIKP3cwW</property>
+        <property name="hibernate.enable_lazy_load_no_trans">true</property>
+
+        <property name="show_sql">false</property>
+        <property name="format_sql">true</property>
+        <mapping class="model.CashRegisterEntity"/>
+        <mapping resource="model/CashRegisterEntity.hbm.xml"/>
+        <mapping class="model.CategoriesEntity"/>
+        <mapping resource="model/CategoriesEntity.hbm.xml"/>
+        <mapping class="model.ItemsEntity"/>
+        <mapping resource="model/ItemsEntity.hbm.xml"/>
+        <mapping class="model.OrdersEntity"/>
+        <mapping resource="model/OrdersEntity.hbm.xml"/>
+        <mapping class="model.TablesEntity"/>
+        <mapping resource="model/TablesEntity.hbm.xml"/>
+        <!--<mapping resource="model/CashRegisterEntity.hbm.xml" />-->
+        <!--<mapping resource="model/TablesEntity.hbm.xml" />-->
+        <!--<mapping resource="model/CategoriesEntity.hbm.xml" />-->
+        <!--<mapping resource="model/ItemsEntity.hbm.xml" />-->
+        <!--<mapping resource="model/OrdersEntity.hbm.xml" />-->
+        <!--<mapping class="model.CashRegisterEntity"/>-->
+
+        <!--
+        <mapping class="model.CashRegisterEntity" />
+         -->
+    </session-factory>
+</hibernate-configuration>

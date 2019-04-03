@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.*?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TableWindowController">
+    <top>
+        <HBox prefHeight="58.0" prefWidth="900.0" style="-fx-background-color: #212121;" BorderPane.alignment="CENTER">
+            <children>
+                <ImageView fitHeight="40.0" fitWidth="50.0" onMouseClicked="#handleBackAction" pickOnBounds="true" preserveRatio="true" rotate="180.0">
+                    <image>
+                        <Image url="@assets/left_arrow.png" />
+                    </image>
+                    <HBox.margin>
+                        <Insets left="10.0" top="10.0" />
+                    </HBox.margin>
+                </ImageView>
+                <Label fx:id="tableLabel" alignment="CENTER_RIGHT" prefHeight="58.0" prefWidth="859.0" text="TABLE 4" textFill="WHITE">
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                    <padding>
+                        <Insets left="20.0" right="20.0" />
+                    </padding>
+                    <font>
+                        <Font size="30.0" />
+                    </font>
+                </Label>
+            </children>
+            <opaqueInsets>
+                <Insets />
+            </opaqueInsets>
+        </HBox>
+    </top>
+    <center>
+        <Pane prefHeight="542.0" prefWidth="900.0" style="-fx-background-color: #212121;" BorderPane.alignment="CENTER">
+            <children>
+                <ScrollPane hbarPolicy="NEVER" layoutX="22.0" prefHeight="520.0" prefWidth="584.0"
+                            style="-fx-background-color: #333333;" vbarPolicy="NEVER">
+                    <content>
+                        <TableView fx:id="tableview" layoutX="202.0" layoutY="-6.0" prefHeight="519.0" prefWidth="583.0"
+                                   style="-fx-background-color: 212121;">
+                            <columns>
+                                <TableColumn fx:id="col1" prefWidth="308.0" minWidth="308.0" text="Name">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="name" />
+                                    </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn fx:id="col2" minWidth="65.0" prefWidth="65.0" text="Price">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="price" />
+                                    </cellValueFactory>
+                                </TableColumn>
+                            </columns>
+                        </TableView>
+                    </content>
+                </ScrollPane>
+                <Line endX="162.0" layoutX="722.0" layoutY="2.0" startX="-100.0" stroke="WHITE" strokeWidth="2.0" />
+                <Button layoutX="643.0" layoutY="472.0" mnemonicParsing="false" onMouseClicked="#pay" prefHeight="46.0"
+                        prefWidth="100.0" text="Pay">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Button>
+                <Button fx:id="divideButton" layoutX="777.0" layoutY="472.0" mnemonicParsing="false"
+                        onMouseClicked="#handleDivideButton" prefHeight="46.0" prefWidth="100.0" text="Devide">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Button>
+                <HBox layoutX="622.0" layoutY="363.0" prefHeight="53.0" prefWidth="263.0">
+                    <children>
+                        <Label prefHeight="56.0" prefWidth="104.0" text="Total:" textFill="WHITE">
+                            <font>
+                                <Font size="25.0"/>
+                            </font>
+                        </Label>
+                        <Label fx:id="priceTotal" alignment="CENTER_RIGHT" prefHeight="53.0" prefWidth="220.0"
+                               text="1009,90 € " textFill="#ff6730">
+                            <font>
+                                <Font size="33.0"/>
+                            </font>
+                        </Label>
+                    </children>
+                </HBox>
+                <Line endX="162.0" layoutX="722.0" layoutY="363.0" startX="-100.0" stroke="WHITE" strokeWidth="2.0" />
+                <Button layoutX="703.0" layoutY="21.0" mnemonicParsing="false" onMouseClicked="#handleMenuAction" prefHeight="57.0" prefWidth="181.0" style="-fx-background-color: #288e28;" text="+ Add items" textFill="WHITE">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Button>
+            </children>
+        </Pane>
+    </center>
+</BorderPane>

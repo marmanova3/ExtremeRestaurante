@@ -195,4 +195,52 @@ public class HibernateQueries {
         session.getTransaction().commit();
         session.close();
     }
+
+    public static void updateInitialStateOfCashRegister(Double newValue) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        Query query = session.createQuery("from CashRegisterEntity");
+
+        Iterator iterator = query.list().iterator();
+
+        while (iterator.hasNext()) {
+            CashRegisterEntity cashRegisterEntity = (CashRegisterEntity) iterator.next();
+            cashRegisterEntity.setCashStatus(newValue);
+        }
+
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    public static CashRegisterEntity getCashRegisterState(boolean isInitial) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        Query query = session.createQuery("from CashRegisterEntity where isInitialState=:isInitial");
+        query.setParameter("isInitial", isInitial);
+
+        List<CashRegisterEntity> list = query.list();
+        CashRegisterEntity result = (CashRegisterEntity) list.get(0);
+
+        session.getTransaction().commit();
+        session.close();
+        return result;
+    }
+
+    public static void updateCurrentStateOfCashRegister(Double amoutToAdd) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        Query query = session.createQuery("from CashRegisterEntity where isInitialState=false");
+
+        List<CashRegisterEntity> list = query.list();
+        CashRegisterEntity currentState = (CashRegisterEntity) list.get(0);
+        Double newStatus = currentState.getCashStatus() + amoutToAdd;
+        currentState.setCashStatus(newStatus);
+
+        session.save(currentState);
+        session.getTransaction().commit();
+        session.close();
+    }
 }

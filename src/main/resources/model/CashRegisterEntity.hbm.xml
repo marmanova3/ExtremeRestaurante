@@ -12,5 +12,8 @@
         <property name="cashStatus">
             <column name="cash_status" sql-type="double precision" precision="-1" not-null="true"/>
         </property>
+        <property name="isInitialState">
+            <column name="is_initial_state" sql-type="boolean" not-null="true"/>
+        </property>
     </class>
 </hibernate-mapping>

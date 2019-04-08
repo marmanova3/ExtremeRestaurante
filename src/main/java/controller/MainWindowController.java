@@ -122,4 +122,9 @@ public class MainWindowController extends AbstractController {
         }
     }
 
+    @FXML
+    private void openCashRegisterScreen() {
+        redirect(Scenes.CASH_REGISTER_WINDOW);
+    }
+
 }

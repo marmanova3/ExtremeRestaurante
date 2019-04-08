@@ -206,6 +206,6 @@ public class PopUpController extends AbstractController {
 
     private void payOrders() {
         HibernateQueries.payOrders(orders);
-        // TODO update cash_register + priceTotal ... toto este nie je!!!
+        HibernateQueries.updateCurrentStateOfCashRegister(priceToPay);
     }
 }

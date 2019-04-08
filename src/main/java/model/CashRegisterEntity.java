@@ -7,6 +7,7 @@ import javax.persistence.*;
 public class CashRegisterEntity {
     private int id;
     private Double cashStatus;
+    private Boolean isInitialState;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +30,17 @@ public class CashRegisterEntity {
         this.cashStatus = cashStatus;
     }
 
+    @Basic
+    @Column(name = "is_initial_state", nullable = true, precision = 0)
+    public Boolean getIsInitialState() {
+        return isInitialState;
+    }
+
+    public void setIsInitialState(Boolean isInitialState) {
+        this.isInitialState = isInitialState;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -38,6 +50,8 @@ public class CashRegisterEntity {
 
         if (id != that.id) return false;
         if (cashStatus != null ? !cashStatus.equals(that.cashStatus) : that.cashStatus != null) return false;
+        if (isInitialState != null ? !isInitialState.equals(that.isInitialState) : that.isInitialState != null)
+            return false;
 
         return true;
     }

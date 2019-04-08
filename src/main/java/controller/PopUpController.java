@@ -24,14 +24,14 @@ public class PopUpController extends AbstractController {
 
     private static final String SUCCESS_MESSAGE = "Payment successful";
     private static final String ERROR_MESSAGE = "Payment denied";
-
+    private static final String DISCOUNT_ERROR_MESSAGE = "Maximum discount is 100%";
     private static final String DOUBLE_PATTERN = "\\d{0,7}([\\.]\\d{0,2})?";
 
 
     @FXML
     private Button confirmBtn, printBtn;
     @FXML
-    private TextField cashInput;
+    private TextField cashInput, discountInput;
     @FXML
     private Label outlayOutput, message, tableNumber;
     private Stage stage;
@@ -39,11 +39,13 @@ public class PopUpController extends AbstractController {
     private List<OrdersEntity> orders;
     private List<OrderItemEntity> orderItems;
     private int tableId;
+    private TableWindowController controller;
 
     public void initialize(URL url, ResourceBundle rb) {
         message.setVisible(false);
         setTableInfo();
         setCashInputListener();
+        setDiscountInputListener();
     }
 
     private void setCashInputListener() {
@@ -57,6 +59,22 @@ public class PopUpController extends AbstractController {
         });
     }
 
+    private void setDiscountInputListener() {
+        discountInput.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!hasDoubleFormat(newValue)) {
+                    discountInput.setText(oldValue);
+                }
+                if (!"".equals(newValue)) {
+                    controller.setPriceTotal((String.valueOf(discountPriceToPay())));
+                } else {
+                    controller.setPriceTotal((String.valueOf(priceToPay)));
+                }
+            }
+        });
+    }
+
     @FXML
     private void closeWindow() {
         closeStage();
@@ -64,19 +82,41 @@ public class PopUpController extends AbstractController {
 
     @FXML
     private void confirm() {
-        if (receivedCashIsValid(cashInput.getText(), priceToPay)) {
+        if (!discoutIsValid()) {
+            showErrorMessage(DISCOUNT_ERROR_MESSAGE);
+            return;
+        }
+        Double discountedPrice = discountPriceToPay();
+        if (receivedCashIsValid(cashInput.getText(), discountedPrice)) {
+            setPriceToPay(discountedPrice);
             payOrders();
             showSuccessMessage();
             outlayOutput.setText(getOutlay(priceToPay, getCashInput()));
             confirmBtn.setDisable(true);
             printBtn.setDisable(false);
             cashInput.setDisable(true);
+            discountInput.setDisable(true);
 
         } else {
-            showErrorMessage();
+            showErrorMessage(ERROR_MESSAGE);
         }
     }
 
+    private boolean discoutIsValid() {
+        Double percentage = getDiscountInput();
+        return percentage <= 100;
+    }
+
+    private Double discountPriceToPay() {
+        Double percentage = getDiscountInput();
+        Double newPrice = priceToPay;
+        if (percentage != 0) {
+            newPrice -= priceToPay * (percentage / 100);
+        }
+        return newPrice;
+    }
+
+    //TODO add discount to items in receipt
     @FXML
     private void printReceipt() {
         String total = Double.toString(priceToPay);
@@ -87,6 +127,14 @@ public class PopUpController extends AbstractController {
 
     private Double getCashInput() {
         return Double.parseDouble(cashInput.getText());
+    }
+
+    private Double getDiscountInput() {
+        String discount = discountInput.getText();
+        if ("".equals(discount)) {
+            return Double.valueOf(0);
+        }
+        return Double.parseDouble(discount);
     }
 
     public boolean hasDoubleFormat(String value) {
@@ -113,12 +161,14 @@ public class PopUpController extends AbstractController {
 
     public void setPriceToPay(double priceToPay) {
         this.priceToPay = priceToPay;
+    }
 
+    public void setTableWindowController(TableWindowController controller) {
+        this.controller = controller;
     }
 
     public void setOrders(List<OrdersEntity> orders) {
         this.orders = orders;
-
     }
 
     public void setOrderItems(List<OrderItemEntity> orderItems) {
@@ -131,8 +181,8 @@ public class PopUpController extends AbstractController {
         message.setVisible(true);
     }
 
-    private void showErrorMessage() {
-        message.setText(ERROR_MESSAGE);
+    private void showErrorMessage(String errorMessage) {
+        message.setText(errorMessage);
         message.setTextFill(Color.web(COLOR_RED));
         message.setVisible(true);
     }

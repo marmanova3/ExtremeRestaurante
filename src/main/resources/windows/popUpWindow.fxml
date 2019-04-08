@@ -3,7 +3,7 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.*?>
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #333333; -fx-border-color: #e1901e; -fx-border-width: 5;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PopUpController">
 <children>
     <HBox alignment="CENTER" prefHeight="40.0" prefWidth="372.0" style="-fx-background-color: #000;">
@@ -17,6 +17,25 @@
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </padding>
+        <VBox.margin>
+            <Insets bottom="5.0"/>
+        </VBox.margin>
+    </HBox>
+    <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="376.0">
+        <children>
+            <Label prefHeight="21.0" prefWidth="215.0" text="Discount" textFill="WHITE"/>
+            <Label text="-" textFill="WHITE">
+                <font>
+                    <Font size="20.0"/>
+                </font>
+            </Label>
+            <TextField fx:id="discountInput" alignment="CENTER_RIGHT" prefHeight="31.0" prefWidth="139.0" text="0">
+                <HBox.margin>
+                    <Insets left="3.0" right="3.0"/>
+                </HBox.margin>
+            </TextField>
+            <Label text="\%" textFill="WHITE"/>
+        </children>
     </HBox>
     <HBox alignment="CENTER">
         <children>
@@ -24,7 +43,11 @@
                <HBox.margin>
                   <Insets bottom="10.0" top="20.0" />
                </HBox.margin></Label>
-            <TextField fx:id="cashInput" alignment="TOP_RIGHT" prefHeight="31.0" prefWidth="139.0" text="0" />
+            <TextField fx:id="cashInput" alignment="TOP_RIGHT" prefHeight="31.0" prefWidth="139.0" text="0">
+                <HBox.margin>
+                    <Insets right="3.0"/>
+                </HBox.margin>
+            </TextField>
             <Label fx:id="outlay11" alignment="CENTER_RIGHT" prefHeight="21.0" prefWidth="2.0" text="€" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="15.0" />

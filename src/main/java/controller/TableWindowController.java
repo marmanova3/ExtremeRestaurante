@@ -228,6 +228,10 @@ public class TableWindowController extends AbstractController {
         tableLabel.setText("TABLE " + (tableId + 1));
     }
 
+    public void setPriceTotal(String total) {
+        priceTotal.setText(total);
+    }
+
     private List<OrdersEntity> getOrdersByDividePayment(){
         if (dividePayment) {
             return getDividedOrders();
@@ -325,6 +329,7 @@ public class TableWindowController extends AbstractController {
         if (this.main != null) {
             popupStage.initOwner(main.getPrimaryStage());
         }
+        popupController.setTableWindowController(this);
         popupController.setStage(popupStage);
         popupController.setPriceToPay(this.total);
         popupController.setOrders(ordersToPay);

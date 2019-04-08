@@ -211,6 +211,7 @@ public class TableWindowController extends AbstractController {
     private void removeOrderItem(int orderId) {
         HibernateQueries.deleteOrderById(orderId);
         fillTableView();
+        updateTotal(getOrders());
     }
 
     private void fillTableView(){

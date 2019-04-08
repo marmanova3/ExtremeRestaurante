@@ -67,7 +67,9 @@ public class PopUpController extends AbstractController {
                     discountInput.setText(oldValue);
                 }
                 if (!"".equals(newValue)) {
-                    controller.setPriceTotal((String.valueOf(discountPriceToPay())));
+                    Double discountedPrice = discountPriceToPay(getDiscountInput());
+                    discountedPrice = Math.round(discountedPrice * 100.0) / 100.0;
+                    controller.setPriceTotal((String.valueOf(discountedPrice)));
                 } else {
                     controller.setPriceTotal((String.valueOf(priceToPay)));
                 }
@@ -82,11 +84,11 @@ public class PopUpController extends AbstractController {
 
     @FXML
     private void confirm() {
-        if (!discoutIsValid()) {
+        if (!discoutIsValid(getDiscountInput())) {
             showErrorMessage(DISCOUNT_ERROR_MESSAGE);
             return;
         }
-        Double discountedPrice = discountPriceToPay();
+        Double discountedPrice = discountPriceToPay(getDiscountInput());
         if (receivedCashIsValid(cashInput.getText(), discountedPrice)) {
             setPriceToPay(discountedPrice);
             payOrders();
@@ -102,13 +104,11 @@ public class PopUpController extends AbstractController {
         }
     }
 
-    private boolean discoutIsValid() {
-        Double percentage = getDiscountInput();
-        return percentage <= 100;
+    public boolean discoutIsValid(Double percentage) {
+        return percentage <= 100 && percentage >= 0;
     }
 
-    private Double discountPriceToPay() {
-        Double percentage = getDiscountInput();
+    public Double discountPriceToPay(Double percentage) {
         Double newPrice = priceToPay;
         if (percentage != 0) {
             newPrice -= priceToPay * (percentage / 100);

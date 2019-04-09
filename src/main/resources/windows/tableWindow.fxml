@@ -46,7 +46,7 @@
                         <TableView fx:id="tableview" layoutX="202.0" layoutY="-6.0" prefHeight="519.0" prefWidth="583.0"
                                    style="-fx-background-color: 212121;">
                             <columns>
-                                <TableColumn fx:id="col1" prefWidth="308.0" minWidth="308.0" text="Name">
+                                <TableColumn fx:id="col1" prefWidth="308.0" minWidth="256.0" text="Name">
                                     <cellValueFactory>
                                         <PropertyValueFactory property="name" />
                                     </cellValueFactory>

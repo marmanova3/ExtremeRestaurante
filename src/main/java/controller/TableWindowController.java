@@ -47,10 +47,13 @@ public class TableWindowController extends AbstractController {
 
     private static final String QUANTITY_COLUMN_NAME = "Quantity";
     private static final String PAY_COLUMN_NAME = "Pay";
+    private static final String QTY_COLUMN_NAME = "Qty";
     private static final String REMOVE_COLUMN_NAME = "Remove";
     private static final int QUANTITY_COLUMN_WIDTH = 75;
     private static final int PAY_COLUMN_WIDTH = 50;
     private static final int REMOVE_COLUMN_WIDTH = 85;
+    private static final int NAME_COLUMN_WIDTH = 256;
+    private static final int PRICE_COLUMN_WIDTH = 65;
 
     private static int tableId;
     private double total;
@@ -61,7 +64,7 @@ public class TableWindowController extends AbstractController {
     @FXML private Label tableLabel, priceTotal;
     @FXML private TableView tableview;
     @FXML
-    private TableColumn col1, col2, col3, col4, col5, emptyColumn;
+    private TableColumn col1, col2, col3, col4, col5, col6, emptyColumn, emptyColumn2;
     @FXML private Button divideButton;
 
 
@@ -71,7 +74,7 @@ public class TableWindowController extends AbstractController {
         setDefaultDivideInfo();
         addQuantityColumn();
         addRemoveColumn();
-        addEmptyColumn();
+        addEmptyColumns();
         setTableViewAttributes();
         fillTableView();
         updateTotal(getOrders());
@@ -97,15 +100,14 @@ public class TableWindowController extends AbstractController {
     @FXML
     private void handleDivideButton() {
         dividePayment = !dividePayment;
+        removeLastColumns();
         if (dividePayment) {
             divideButton.setText(BUTTON_TEXT_CANCEL);
-            removeEmptyColumn();
-            addDividePaymentColumn();
-            updateTotal(getDividedOrders());
+            addDividePaymentColumns();
+            setPriceTotal(getDividedOrdersPrice());
         } else {
             divideButton.setText(BUTTON_TEXT_DIVIDE);
-            removeDividePaymentColumn();
-            addEmptyColumn();
+            addEmptyColumns();
             updateTotal(getOrders());
         }
     }
@@ -114,8 +116,8 @@ public class TableWindowController extends AbstractController {
         tableview.setEditable(true);
         tableview.setStyle(TABLE_VIEW_STYLE);
         col1.setStyle(TABLE_COLUMN_STYLE1);
-        col1.setPrefWidth(308);
-        col2.setPrefWidth(65);
+        col1.setPrefWidth(NAME_COLUMN_WIDTH);
+        col2.setPrefWidth(PRICE_COLUMN_WIDTH);
         col2.setStyle(TABLE_COLUMN_STYLE1);
         col3.setStyle(TABLE_COLUMN_STYLE1);
     }
@@ -142,19 +144,48 @@ public class TableWindowController extends AbstractController {
             });
     }
 
-    private void addDividePaymentColumn() {
+    private void setOnEditCommitWithCheckToColumn(TableColumn tableColumn) {
+        tableColumn.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<OrderItemEntity, Integer>>() {
+                    public void handle(TableColumn.CellEditEvent<OrderItemEntity, Integer> t) {
+                        OrderItemEntity orderItemEntity = (OrderItemEntity) t.getTableView().getItems().get(
+                                t.getTablePosition().getRow());
+                        if (t.getNewValue() >= 0 && t.getNewValue() <= orderItemEntity.getQuantity()) {
+                            orderItemEntity.setDividedQuantity(t.getNewValue());
+                            setPriceTotal(getDividedOrdersPrice());
+                        }
+                        //TODO oldvalue
+                    }
+                });
+    }
+
+    private void addDividePaymentColumns() {
         col4 = new TableColumn(PAY_COLUMN_NAME);
         col4.setMinWidth(PAY_COLUMN_WIDTH);
         col4.setStyle(TABLE_COLUMN_STYLE2);
         addCheckboxesToColumn(col4);
-        tableview.getColumns().addAll(col4);
+
+        Callback<TableColumn, TableCell> cellFactory = p -> new EditingCell();
+        col6 = new TableColumn(QTY_COLUMN_NAME);
+        col6.setMinWidth(PAY_COLUMN_WIDTH);
+        col6.setStyle(TABLE_COLUMN_STYLE2);
+        col6.setCellFactory(cellFactory);
+        col6.setCellValueFactory(new PropertyValueFactory<OrderItemEntity, Integer>("dividedQuantity"));
+        setOnEditCommitWithCheckToColumn(col6);
+
+        tableview.getColumns().addAll(col4, col6);
     }
 
-    private void addEmptyColumn() {
+    private void addEmptyColumns() {
         emptyColumn = new TableColumn(PAY_COLUMN_NAME);
         emptyColumn.setMinWidth(PAY_COLUMN_WIDTH);
         emptyColumn.setStyle(TABLE_COLUMN_STYLE2);
-        tableview.getColumns().addAll(emptyColumn);
+
+        emptyColumn2 = new TableColumn(QTY_COLUMN_NAME);
+        emptyColumn2.setMinWidth(PAY_COLUMN_WIDTH);
+        emptyColumn2.setStyle(TABLE_COLUMN_STYLE2);
+
+        tableview.getColumns().addAll(emptyColumn, emptyColumn2);
     }
 
     private void addRemoveColumn() {
@@ -182,7 +213,7 @@ public class TableWindowController extends AbstractController {
         checkbox.selectedProperty().addListener(new ChangeListener<Boolean>() {
             public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
                 orderItemEntity.setCheckbox(new_val);
-                updateTotal(getDividedOrders());
+                setPriceTotal(getDividedOrdersPrice());
             }
         });
     }
@@ -211,7 +242,11 @@ public class TableWindowController extends AbstractController {
     private void removeOrderItem(int orderId) {
         HibernateQueries.deleteOrderById(orderId);
         fillTableView();
-        updateTotal(getOrders());
+        if (!dividePayment) {
+            updateTotal(getOrders());
+        } else {
+            setPriceTotal(getDividedOrdersPrice());
+        }
     }
 
     private void fillTableView(){
@@ -229,13 +264,14 @@ public class TableWindowController extends AbstractController {
         tableLabel.setText("TABLE " + (tableId + 1));
     }
 
-    public void setPriceTotal(String total) {
-        priceTotal.setText(total);
+    public void setPriceTotal(Double total) {
+        this.total = total;
+        priceTotal.setText(String.format("%s €", total));
     }
 
     private List<OrdersEntity> getOrdersByDividePayment(){
         if (dividePayment) {
-            return getDividedOrders();
+            return dividedOrders();
         }
         return getOrders();
     }
@@ -280,28 +316,47 @@ public class TableWindowController extends AbstractController {
 
     public void updateOrderByQuantity(OrderItemEntity orderItemEntity) {
         HibernateQueries.updateOrderByQuantity(orderItemEntity);
-        reload();
+        reload(); //je nutny?
     }
 
     private void reload() {
         redirect(Scenes.TABLE_WINDOW);
     }
 
-    private void removeDividePaymentColumn() {
+    private void removeLastColumns() {
+        tableview.getColumns().remove(5);
         tableview.getColumns().remove(4);
     }
 
-    private void removeEmptyColumn() {
-        tableview.getColumns().remove(4);
+    private Double getDividedOrdersPrice() {
+        Double price = 0.0;
+        for (Object row : tableview.getItems()) {
+            OrderItemEntity orderItem = (OrderItemEntity) row;
+            if (orderItem.getCheckbox()) {
+                price += (orderItem.getPrice() * orderItem.getDividedQuantity());
+            }
+        }
+        price = Math.round(price * 100.0) / 100.0;
+        return price;
     }
 
-    private List<OrdersEntity> getDividedOrders() {
+    private List<OrdersEntity> dividedOrders() {
         List<OrdersEntity> orders = new ArrayList<>();
         for (Object row : tableview.getItems()) {
             OrderItemEntity orderItem = (OrderItemEntity) row;
             if (orderItem.getCheckbox()) {
                 OrdersEntity orderEntity = HibernateQueries.getOrderById(orderItem.getOrderId());
-                orders.add(orderEntity);
+                if (orderItem.getDividedQuantity() < orderItem.getQuantity()) {
+                    //update order quantity
+                    int newQuantity = orderEntity.getQuantity() - orderItem.getDividedQuantity();
+                    orderItem.setQuantity(newQuantity);
+                    HibernateQueries.updateOrderByQuantity(orderItem);
+                    //create new order
+                    OrdersEntity newOrderEntity = HibernateQueries.createOrderEntity(orderEntity, orderItem.getDividedQuantity());
+                    orders.add(newOrderEntity);
+                } else {
+                    orders.add(orderEntity);
+                }
             }
         }
         return orders;

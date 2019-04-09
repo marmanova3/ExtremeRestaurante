@@ -7,6 +7,7 @@ public class OrderItemEntity {
     private Double price;
     private Integer quantity;
     private Boolean checkbox;
+    private Integer dividedQuantity;
 
     public int getOrderId() {
         return this.orderId;
@@ -52,6 +53,14 @@ public class OrderItemEntity {
         this.checkbox = checkbox;
     }
 
+    public Integer getDividedQuantity() {
+        return dividedQuantity;
+    }
+
+    public void setDividedQuantity(Integer dividedQuantity) {
+        this.dividedQuantity = dividedQuantity;
+    }
+
     @Override
     public int hashCode() {
         int result = orderId;
@@ -77,4 +86,5 @@ public class OrderItemEntity {
 
         return true;
     }
+
 }

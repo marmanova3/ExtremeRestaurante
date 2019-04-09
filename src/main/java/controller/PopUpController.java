@@ -68,9 +68,9 @@ public class PopUpController extends AbstractController {
                 if (!"".equals(newValue)) {
                     Double discountedPrice = discountPriceToPay(getDiscountInput());
                     discountedPrice = NumberUtils.getRoundedDecimalNumber(discountedPrice, 2);
-                    controller.setPriceTotal((String.valueOf(discountedPrice)));
+                    controller.setPriceTotal(discountedPrice);
                 } else {
-                    controller.setPriceTotal((String.valueOf(priceToPay)));
+                    controller.setPriceTotal(priceToPay);
                 }
             }
         });

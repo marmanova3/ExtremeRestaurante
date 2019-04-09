@@ -13,6 +13,18 @@ public class OrdersEntity {
     private String name;
     private int quantity;
 
+    public OrdersEntity() {
+    }
+
+    public OrdersEntity(OrdersEntity ordersEntity) {
+        this.price = ordersEntity.getPrice();
+        this.paid = ordersEntity.getPaid();
+        this.item = ordersEntity.getItem();
+        this.table = ordersEntity.getTable();
+        this.name = ordersEntity.getName();
+        this.quantity = ordersEntity.getQuantity();
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

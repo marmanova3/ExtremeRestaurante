@@ -158,6 +158,7 @@ public class HibernateQueries {
             orderItemEntity.setQuantity(orderEntity.getQuantity());
             orderItemEntity.setOrderId(orderEntity.getId());
             orderItemEntity.setCheckbox(false);
+            orderItemEntity.setDividedQuantity(orderEntity.getQuantity());
 
             orderItemEntities.add(orderItemEntity);
         }
@@ -183,6 +184,20 @@ public class HibernateQueries {
         }
         session.getTransaction().commit();
         session.close();
+    }
+
+    public static OrdersEntity createOrderEntity(OrdersEntity orderEntity, int quantity) {
+        final Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        OrdersEntity newOrder = new OrdersEntity(orderEntity);
+        newOrder.setQuantity(quantity);
+        session.save(newOrder);
+
+        session.getTransaction().commit();
+        session.close();
+
+        return newOrder;
     }
 
     public static void deleteOrderById(int orderId) {

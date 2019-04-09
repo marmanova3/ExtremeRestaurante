@@ -9,14 +9,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.CashRegisterEntity;
 import utils.HibernateQueries;
+import utils.NumberUtils;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class CashRegisterController extends AbstractController implements Initializable {
-
-    // REFAKT - tento pattern je aj v PopUpControlleri, treba jeden vyhodit
-    private static final String DOUBLE_PATTERN = "\\d{0,7}([\\.]\\d{0,2})?";
 
     private CashRegisterEntity initialState;
     private CashRegisterEntity currentState;
@@ -41,9 +39,10 @@ public class CashRegisterController extends AbstractController implements Initia
 
     @FXML
     private void setNewInitialState() {
-        if (newStateIsValid(initStateInput.getText())) {
+        if (NumberUtils.isValidDoubleFormat(initStateInput.getText())) {
             Double newState = Double.parseDouble(initStateInput.getText());
-            HibernateQueries.updateInitialStateOfCashRegister(newState);
+            Double newStateRounded = NumberUtils.getRoundedDecimalNumber(newState, 2);
+            HibernateQueries.updateInitialStateOfCashRegister(newStateRounded);
             setInitialStateValue();
             setCurrentStateValue();
             setProfilValue();
@@ -54,26 +53,11 @@ public class CashRegisterController extends AbstractController implements Initia
         initStateInput.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!hasDoubleFormat(newValue)) {
+                if (!NumberUtils.hasDoubleFormat(newValue)) {
                     initStateInput.setText(oldValue);
                 }
             }
         });
-    }
-
-    // REFAKT - tato metoda je rovnaka ako v PopUpController - pri refaktore treba len jednu nechat!
-    public boolean hasDoubleFormat(String value) {
-        return value.matches(DOUBLE_PATTERN);
-    }
-
-    // REFAKT - to iste, aj takato podobna uz je
-    public boolean newStateIsValid(String cash) {
-        try {
-            Double.parseDouble(cash);
-            return true;
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
     }
 
     private void setInitialStateValue() {
@@ -87,7 +71,7 @@ public class CashRegisterController extends AbstractController implements Initia
     }
 
     private void setProfilValue() {
-        profitLabel.setText(String.format("%.2f", getProfitValue()));
+        profitLabel.setText(NumberUtils.getRoundedDecimalNumber(getProfitValue(), 2).toString());
     }
 
     private Double getProfitValue() {

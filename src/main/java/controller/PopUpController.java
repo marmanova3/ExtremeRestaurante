@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import model.OrderItemEntity;
 import model.OrdersEntity;
 import utils.HibernateQueries;
+import utils.NumberUtils;
 import utils.ReceiptPrinter;
 
 import java.net.URL;
@@ -25,8 +26,6 @@ public class PopUpController extends AbstractController {
     private static final String SUCCESS_MESSAGE = "Payment successful";
     private static final String ERROR_MESSAGE = "Payment denied";
     private static final String DISCOUNT_ERROR_MESSAGE = "Maximum discount is 100%";
-    private static final String DOUBLE_PATTERN = "\\d{0,7}([\\.]\\d{0,2})?";
-
 
     @FXML
     private Button confirmBtn, printBtn;
@@ -52,7 +51,7 @@ public class PopUpController extends AbstractController {
         cashInput.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!hasDoubleFormat(newValue)) {
+                if (!NumberUtils.hasDoubleFormat(newValue)) {
                     cashInput.setText(oldValue);
                 }
             }
@@ -63,12 +62,12 @@ public class PopUpController extends AbstractController {
         discountInput.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!hasDoubleFormat(newValue)) {
+                if (!NumberUtils.hasDoubleFormat(newValue)) {
                     discountInput.setText(oldValue);
                 }
                 if (!"".equals(newValue)) {
                     Double discountedPrice = discountPriceToPay(getDiscountInput());
-                    discountedPrice = Math.round(discountedPrice * 100.0) / 100.0;
+                    discountedPrice = NumberUtils.getRoundedDecimalNumber(discountedPrice, 2);
                     controller.setPriceTotal((String.valueOf(discountedPrice)));
                 } else {
                     controller.setPriceTotal((String.valueOf(priceToPay)));
@@ -88,20 +87,27 @@ public class PopUpController extends AbstractController {
             showErrorMessage(DISCOUNT_ERROR_MESSAGE);
             return;
         }
-        Double discountedPrice = discountPriceToPay(getDiscountInput());
-        if (receivedCashIsValid(cashInput.getText(), discountedPrice)) {
-            setPriceToPay(discountedPrice);
-            payOrders();
-            showSuccessMessage();
-            outlayOutput.setText(getOutlay(priceToPay, getCashInput()));
-            confirmBtn.setDisable(true);
-            printBtn.setDisable(false);
-            cashInput.setDisable(true);
-            discountInput.setDisable(true);
-
-        } else {
+        if (!NumberUtils.isValidDoubleFormat(cashInput.getText())) {
             showErrorMessage(ERROR_MESSAGE);
+            return;
         }
+
+        Double discountedPrice = discountPriceToPay(getDiscountInput());
+        Double receivedCashFromCustomer = Double.parseDouble(cashInput.getText());
+        if (!NumberUtils.isGreaterOrEqual(receivedCashFromCustomer, discountedPrice)) {
+            showErrorMessage(ERROR_MESSAGE);
+            return;
+        }
+
+        setPriceToPay(discountedPrice);
+        payOrders();
+        showSuccessMessage();
+        String roundedOutlayString = NumberUtils.getRoundedDecimalNumber(getOutlay(priceToPay, getCashInput()), 2).toString();
+        outlayOutput.setText(roundedOutlayString);
+        confirmBtn.setDisable(true);
+        printBtn.setDisable(false);
+        cashInput.setDisable(true);
+        discountInput.setDisable(true);
     }
 
     public boolean discoutIsValid(Double percentage) {
@@ -119,9 +125,9 @@ public class PopUpController extends AbstractController {
     //TODO add discount to items in receipt
     @FXML
     private void printReceipt() {
-        String total = Double.toString(priceToPay);
-        String cash = Double.toString(getCashInput());
-        String outlay = getOutlay(priceToPay, getCashInput());
+        String total = NumberUtils.getRoundedDecimalNumber(priceToPay, 2).toString();
+        String cash = NumberUtils.getRoundedDecimalNumber(getCashInput(), 2).toString();
+        String outlay = NumberUtils.getRoundedDecimalNumber(getOutlay(priceToPay, getCashInput()), 2).toString();
         ReceiptPrinter.print(total, cash, outlay, orderItems);
     }
 
@@ -135,10 +141,6 @@ public class PopUpController extends AbstractController {
             return Double.valueOf(0);
         }
         return Double.parseDouble(discount);
-    }
-
-    public boolean hasDoubleFormat(String value) {
-        return value.matches(DOUBLE_PATTERN);
     }
 
     private void closeStage() {
@@ -187,21 +189,8 @@ public class PopUpController extends AbstractController {
         message.setVisible(true);
     }
 
-    public boolean receivedCashIsValid(String cash, Double priceToPay) {
-        try {
-            Double receivedCashFromCustomer = Double.parseDouble(cash);
-            return isGreaterOrEqual(receivedCashFromCustomer, priceToPay);
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-    }
-
-    private boolean isGreaterOrEqual(Double comparingValue, Double desiredValue) {
-        return desiredValue.compareTo(comparingValue) <= 0;
-    }
-
-    public String getOutlay(Double priceToPay, Double receivedCash) {
-        return String.format("%.2f", receivedCash - priceToPay);
+    public Double getOutlay(Double priceToPay, Double receivedCash) {
+        return receivedCash - priceToPay;
     }
 
     private void payOrders() {

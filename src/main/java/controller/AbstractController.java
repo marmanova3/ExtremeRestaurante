@@ -7,6 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.IOException;
 
@@ -38,5 +39,14 @@ public abstract class AbstractController implements Initializable {
             e.printStackTrace();
         }
         return root;
+    }
+
+    public Stage createPopUpStage() {
+        Stage popupStage = new Stage();
+        popupStage.initStyle(StageStyle.UNDECORATED);
+        if (this.main != null) {
+            popupStage.initOwner(main.getPrimaryStage());
+        }
+        return popupStage;
     }
 }

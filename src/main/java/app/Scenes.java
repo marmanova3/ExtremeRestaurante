@@ -5,7 +5,9 @@ public enum Scenes {
     CHOOSE_ITEMS_WINDOW("/windows/chooseItemsWindow.fxml"),
     MAIN_WINDOW("/windows/mainWindow.fxml"),
     POP_UP_WINDOW("/windows/popUpWindow.fxml"),
-    TABLE_WINDOW("/windows/tableWindow.fxml");
+    TABLE_WINDOW("/windows/tableWindow.fxml"),
+    POP_UP_NEW_ITEM_WINDOW("/windows/popUpNewItemWindow.fxml"),
+    POP_UP_EDIT_ITEM_WINDOW("/windows/popUpEditItemWindow.fxml");
 
     private final String fxmlPath;
 

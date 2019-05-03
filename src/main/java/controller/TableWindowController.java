@@ -22,7 +22,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import model.OrderItemEntity;
 import model.OrdersEntity;
@@ -379,12 +378,8 @@ public class TableWindowController extends AbstractController {
         PopUpController popupController = loader.getController();
 
         Scene scene = new Scene(root);
-        Stage popupStage = new Stage();
+        Stage popupStage = createPopUpStage();
 
-        popupStage.initStyle(StageStyle.UNDECORATED);
-        if (this.main != null) {
-            popupStage.initOwner(main.getPrimaryStage());
-        }
         popupController.setTableWindowController(this);
         popupController.setStage(popupStage);
         popupController.setPriceToPay(this.total);

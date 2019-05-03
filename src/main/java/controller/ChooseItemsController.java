@@ -121,6 +121,9 @@ public class ChooseItemsController extends AbstractController implements Initial
         Integer itemId = Integer.parseInt(clickedItemIdAsString);
         HibernateQueries.addItemToTableOrders(itemId, table);
     }
+    
+    @FXML
+    private void addNewItem(MouseEvent event) {}
 
     private void setDefaultCategory(){
         categoryId = CATEGORY_ID_DRINKS;

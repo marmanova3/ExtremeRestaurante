@@ -192,7 +192,7 @@
             <HBox alignment="CENTER_RIGHT" layoutX="502.0" layoutY="493.0" prefHeight="39.0" prefWidth="383.0">
                <children>
                    <CheckBox alignment="CENTER_RIGHT" mnemonicParsing="false" text="Half portion" textFill="WHITE"/>
-                   <Button fx:id="createNewItem" alignment="CENTER" mnemonicParsing="false" onMouseClicked="#newItem"
+                   <Button fx:id="createNewItem" alignment="CENTER" mnemonicParsing="false" onMouseClicked="#addNewItem"
                            prefHeight="31.0" prefWidth="148.0" style="-fx-background-color: #288e28;"
                            text="Create new item" textFill="WHITE">
                      <HBox.margin>

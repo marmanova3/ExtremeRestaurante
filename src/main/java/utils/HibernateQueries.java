@@ -93,7 +93,7 @@ public class HibernateQueries {
         return items;
     }
 
-    public static void addItemToTableOrders(int itemId, TablesEntity table) {
+    public static void addItemToTableOrders(int itemId, TablesEntity table, boolean halfPrice) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
@@ -108,10 +108,11 @@ public class HibernateQueries {
             }
         }
         if (newOrder) {
+            double discount = halfPrice == true ? 0.5 : 1;
             OrdersEntity order = new OrdersEntity();
             order.setPaid(false);
             order.setItem(item);
-            order.setPrice(item.getPrice());
+            order.setPrice(item.getPrice() * discount);
             order.setTable(table);
             order.setQuantity(1);
             session.save(order);

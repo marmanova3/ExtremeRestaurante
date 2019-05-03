@@ -10,6 +10,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -61,6 +62,8 @@ public class ChooseItemsController extends AbstractController implements Initial
     private FlowPane flowPane;
     @FXML
     private Button drinks, mainCourse, soups, desserts, pasta, pizza, sideDishes;
+    @FXML
+    private CheckBox checkbox;
 
     public void initialize(URL location, ResourceBundle resources) {
         setDefaultCategory();
@@ -127,7 +130,7 @@ public class ChooseItemsController extends AbstractController implements Initial
     private void addItemToOrders(MouseEvent event) {
         String clickedItemIdAsString = ((Button) event.getSource()).getId();
         Integer itemId = Integer.parseInt(clickedItemIdAsString);
-        HibernateQueries.addItemToTableOrders(itemId, table);
+        HibernateQueries.addItemToTableOrders(itemId, table, checkbox.isSelected());
     }
 
     @FXML

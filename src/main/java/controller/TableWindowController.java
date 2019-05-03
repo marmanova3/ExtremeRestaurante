@@ -383,6 +383,7 @@ public class TableWindowController extends AbstractController {
         popupController.setTableWindowController(this);
         popupController.setStage(popupStage);
         popupController.setPriceToPay(this.total);
+        popupController.setPriceTotal(this.total);
         popupController.setOrders(ordersToPay);
         List<OrderItemEntity> receipt = getOrderItemsEntitiesByDividePayment();
 

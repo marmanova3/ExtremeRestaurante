@@ -89,9 +89,11 @@ public class ReceiptPrinterTest {
     public void shouldReturnReceiptTotal() {
         String total = "";
         total += "****************************\n";
-        total += "*     TOTAL: 70.85 EUR     *\n";
+        total += "*     TOTAL: 70.00 EUR     *\n";
+        total += "*      DISCOUNT: -10%      *\n";
+        total += "* PRICE TO PAY: 63.00 EUR  *\n";
         total += "****************************\n";
-        assertEquals(total, ReceiptPrinter.receiptTotal(28, "70.85"));
+        assertEquals(total, ReceiptPrinter.receiptTotal(28, "70.00", "63.00", "10"));
     }
 
     @Test

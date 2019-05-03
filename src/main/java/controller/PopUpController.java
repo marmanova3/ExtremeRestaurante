@@ -35,6 +35,7 @@ public class PopUpController extends AbstractController {
     private Label outlayOutput, message, tableNumber;
     private Stage stage;
     private double priceToPay;
+    private double priceTotal;
     private List<OrdersEntity> orders;
     private List<OrderItemEntity> orderItems;
     private int tableId;
@@ -122,13 +123,14 @@ public class PopUpController extends AbstractController {
         return newPrice;
     }
 
-    //TODO add discount to items in receipt
     @FXML
     private void printReceipt() {
-        String total = NumberUtils.getRoundedDecimalNumber(priceToPay, 2).toString();
+        String toPay = NumberUtils.getRoundedDecimalNumber(priceToPay, 2).toString();
+        String total = NumberUtils.getRoundedDecimalNumber(priceTotal, 2).toString();
         String cash = NumberUtils.getRoundedDecimalNumber(getCashInput(), 2).toString();
         String outlay = NumberUtils.getRoundedDecimalNumber(getOutlay(priceToPay, getCashInput()), 2).toString();
-        ReceiptPrinter.print(total, cash, outlay, orderItems);
+        String discount = getDiscountInput().toString();
+        ReceiptPrinter.print(total, cash, outlay, orderItems, toPay, discount);
     }
 
     private Double getCashInput() {
@@ -163,6 +165,10 @@ public class PopUpController extends AbstractController {
 
     public void setPriceToPay(double priceToPay) {
         this.priceToPay = priceToPay;
+    }
+
+    public void setPriceTotal(double priceTotal) {
+        this.priceTotal = priceTotal;
     }
 
     public void setTableWindowController(TableWindowController controller) {

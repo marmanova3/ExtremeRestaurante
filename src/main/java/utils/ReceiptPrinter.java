@@ -10,6 +10,9 @@ import java.util.List;
 public class ReceiptPrinter {
 
     private static final String TOTAL = " TOTAL: ";
+    private static final String DISCOUNT = " DISCOUNT: -";
+    private static final String PERCENT = "% ";
+    private static final String TO_PAY = " TO PAY: ";
     private static final String EXTREME_RESTAURANTE = " EXTREME RESTAURANTE ";
     private static final String EUR = " EUR ";
     private static final String CASH = " CASH: ";
@@ -18,17 +21,17 @@ public class ReceiptPrinter {
     private static final String END = "*\n";
     private static final String THANK_YOU_FOR_VISIT = " THANK YOU FOR VISIT ";
 
-    public static void print(String total, String cash, String outlay, List<OrderItemEntity> orderItems) {
+    public static void print(String total, String cash, String outlay, List<OrderItemEntity> orderItems, String toPay, String discount) {
         int lineWidth = lineWidth(longestItemNameSize(orderItems), 25);
         System.out.print(receiptHeader(lineWidth));
         System.out.print(receiptItems(lineWidth, orderItems));
-        System.out.print(receiptTotal(lineWidth, total));
+        System.out.print(receiptTotal(lineWidth, total, toPay, discount));
         System.out.print(receiptOutlay(lineWidth, cash, outlay));
         System.out.print(receiptFooter(lineWidth));
     }
 
     public static int lineWidth(int longestItemNameSize, int minWidth) {
-        return longestItemNameSize > minWidth ? longestItemNameSize : minWidth;
+        return longestItemNameSize > minWidth ? longestItemNameSize + 10 : minWidth;
     }
 
     public static int longestItemNameSize(List<OrderItemEntity> orderItems) {
@@ -60,10 +63,12 @@ public class ReceiptPrinter {
         return items;
     }
 
-    public static String receiptTotal(int lineWidth, String total) {
+    public static String receiptTotal(int lineWidth, String total, String toPay, String discount) {
         String totalLine = "";
         totalLine += fullStarLine(lineWidth);
         totalLine += createReceiptCenterLine(lineWidth, TOTAL + total + EUR);
+        totalLine += createReceiptCenterLine(lineWidth, DISCOUNT + discount + PERCENT);
+        totalLine += createReceiptCenterLine(lineWidth, TO_PAY + toPay + EUR);
         totalLine += fullStarLine(lineWidth);
         return totalLine;
     }

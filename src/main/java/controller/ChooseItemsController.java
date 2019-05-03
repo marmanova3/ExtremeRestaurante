@@ -6,7 +6,9 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -45,14 +47,17 @@ public class ChooseItemsController extends AbstractController implements Initial
 
     private int tableId;
     private TablesEntity table;
-    private int categoryId ;
+    private int categoryId;
     private Button categoryButtonClicked;
     private List<ItemsEntity> menuItems = new ArrayList<>();
     private ArrayList<Button> categoryButtons;
 
-    @FXML private Label tableLabel;
-    @FXML private FlowPane flowPane;
-    @FXML private Button drinks, mainCourse, soups, desserts, pasta, pizza, sideDishes;
+    @FXML
+    private Label tableLabel;
+    @FXML
+    private FlowPane flowPane;
+    @FXML
+    private Button drinks, mainCourse, soups, desserts, pasta, pizza, sideDishes;
 
     public void initialize(URL location, ResourceBundle resources) {
         setDefaultCategory();
@@ -117,15 +122,22 @@ public class ChooseItemsController extends AbstractController implements Initial
 
     @FXML
     private void addItemToOrders(MouseEvent event) {
-        String clickedItemIdAsString = ((Button)event.getSource()).getId();
+        String clickedItemIdAsString = ((Button) event.getSource()).getId();
         Integer itemId = Integer.parseInt(clickedItemIdAsString);
         HibernateQueries.addItemToTableOrders(itemId, table);
     }
-    
-    @FXML
-    private void addNewItem(MouseEvent event) {}
 
-    private void setDefaultCategory(){
+    @FXML
+    private void editItem(MouseEvent event) {
+        String clickedItemIdAsString = ((Button) event.getSource()).getId();
+        System.out.println(clickedItemIdAsString);
+    }
+
+    @FXML
+    private void addNewItem(MouseEvent event) {
+    }
+
+    private void setDefaultCategory() {
         categoryId = CATEGORY_ID_DRINKS;
         categoryButtonClicked = drinks;
     }
@@ -148,6 +160,22 @@ public class ChooseItemsController extends AbstractController implements Initial
         categoryButtons.add(sideDishes);
     }
 
+    private void setButtonBackgroundLight(Button button) {
+        Background background = new Background(
+                new BackgroundFill(Color.web(COLOR_GRAY),
+                        CornerRadii.EMPTY,
+                        Insets.EMPTY));
+        button.setBackground(background);
+    }
+
+    private void setButtonBackgroundDark(Button button) {
+        Background background = new Background(
+                new BackgroundFill(Color.web(COLOR_DARK),
+                        CornerRadii.EMPTY,
+                        Insets.EMPTY));
+        button.setBackground(background);
+    }
+
     private void toggleCategoryActiveState() {
         for (Button categoryButton : categoryButtons) {
             categoryButton.setStyle("-fx-background-color: " + getColorOfCategoryButton(categoryButton));
@@ -166,8 +194,27 @@ public class ChooseItemsController extends AbstractController implements Initial
 
     private void setItemsButtons() {
         flowPane.getChildren().clear();
+
+
         for (ItemsEntity item : menuItems) {
-            Button button = new Button(item.getName());
+            // Edit
+            ImageView editIcon = new ImageView("windows/assets/edit.png");
+            editIcon.setFitHeight(20);
+            editIcon.setFitWidth(20);
+            Button editButton = new Button("", editIcon);
+            editButton.setCursor(Cursor.HAND);
+            editButton.setPrefSize(ITEM_BUTTON_WIDTH, ITEM_BUTTON_HEIGHT / 5);
+            editButton.setContentDisplay(ContentDisplay.RIGHT);
+            setButtonBackgroundDark(editButton);
+            editButton.setId(String.valueOf(item.getId()));
+            editButton.setOnMouseClicked(event -> editItem(event));
+            // ADD
+            Button button = new Button(
+                    item.getName() + '\n' + item.getPrice() + '€',
+                    editButton
+            );
+            button.setContentDisplay(ContentDisplay.TOP);
+
             button.wrapTextProperty().setValue(true);
             button.setTextAlignment(TextAlignment.CENTER);
             button.setPrefSize(ITEM_BUTTON_WIDTH, ITEM_BUTTON_HEIGHT);
@@ -183,17 +230,15 @@ public class ChooseItemsController extends AbstractController implements Initial
             button.setOnMouseClicked(event ->
                     addItemToOrders(event));
             button.setOnMouseEntered(event ->
-                    button.setBackground(
-                            new Background(
-                                    new BackgroundFill(Color.web(COLOR_GRAY),
-                                            CornerRadii.EMPTY,
-                                            Insets.EMPTY))));
+            {
+                setButtonBackgroundLight(button);
+                setButtonBackgroundLight(editButton);
+            });
             button.setOnMouseExited(event ->
-                    button.setBackground(
-                            new Background(
-                                    new BackgroundFill(Color.web(COLOR_DARK),
-                                            CornerRadii.EMPTY,
-                                            Insets.EMPTY))));
+            {
+                setButtonBackgroundDark(button);
+                setButtonBackgroundDark(editButton);
+            });
             button.setOnMousePressed(event ->
                     button.setBackground(
                             new Background(

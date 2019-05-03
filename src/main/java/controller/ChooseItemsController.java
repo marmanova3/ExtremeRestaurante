@@ -131,6 +131,7 @@ public class ChooseItemsController extends AbstractController implements Initial
         String clickedItemIdAsString = ((Button) event.getSource()).getId();
         Integer itemId = Integer.parseInt(clickedItemIdAsString);
         HibernateQueries.addItemToTableOrders(itemId, table, checkbox.isSelected());
+        checkbox.setSelected(false);
     }
 
     @FXML

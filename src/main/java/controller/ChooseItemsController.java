@@ -200,59 +200,65 @@ public class ChooseItemsController extends AbstractController implements Initial
         setItemsButtons();
     }
 
+    private Button setEditButton(ItemsEntity item) {
+        ImageView editIcon = new ImageView("windows/assets/edit.png");
+        editIcon.setFitHeight(20);
+        editIcon.setFitWidth(20);
+        Button editButton = new Button("", editIcon);
+        editButton.setCursor(Cursor.HAND);
+        editButton.setPrefSize(ITEM_BUTTON_WIDTH, ITEM_BUTTON_HEIGHT / 5);
+        editButton.setContentDisplay(ContentDisplay.RIGHT);
+        editButton.setAlignment(Pos.TOP_RIGHT);
+        setButtonBackgroundDark(editButton);
+        editButton.setId(String.valueOf(item.getId()));
+        editButton.setOnMouseClicked(event -> editItem(event));
+        return editButton;
+    }
+
+    private Button setAddButton(ItemsEntity item) {
+        Button button = new Button(item.getName() + '\n' + item.getPrice() + '€');
+        button.wrapTextProperty().setValue(true);
+        button.setTextAlignment(TextAlignment.CENTER);
+        button.setPrefSize(ITEM_BUTTON_WIDTH, ITEM_BUTTON_HEIGHT);
+        button.setBackground(
+                new Background(
+                        new BackgroundFill(Color.web(COLOR_DARK),
+                                CornerRadii.EMPTY,
+                                Insets.EMPTY)));
+        button.setTextFill(Paint.valueOf(COLOR_WHITE));
+        button.setFont(Font.font(18));
+        button.setId(String.valueOf(item.getId()));
+        button.setCursor(Cursor.HAND);
+        button.setOnMouseClicked(event ->
+                addItemToOrders(event));
+        button.setOnMousePressed(event ->
+                button.setBackground(
+                        new Background(
+                                new BackgroundFill(Color.web(COLOR_LIGHT_GRAY),
+                                        CornerRadii.EMPTY,
+                                        Insets.EMPTY))));
+        return button;
+    }
+
     private void setItemsButtons() {
         flowPane.getChildren().clear();
-
         for (ItemsEntity item : menuItems) {
             VBox vbox = new VBox();
-            // Edit
-            ImageView editIcon = new ImageView("windows/assets/edit.png");
-            editIcon.setFitHeight(20);
-            editIcon.setFitWidth(20);
-            Button editButton = new Button("", editIcon);
-            editButton.setCursor(Cursor.HAND);
-            editButton.setPrefSize(ITEM_BUTTON_WIDTH, ITEM_BUTTON_HEIGHT / 5);
-            editButton.setContentDisplay(ContentDisplay.RIGHT);
-            editButton.setAlignment(Pos.TOP_RIGHT);
-            setButtonBackgroundDark(editButton);
-            editButton.setId(String.valueOf(item.getId()));
-            editButton.setOnMouseClicked(event -> editItem(event));
-
-            // ADD
-            Button button = new Button(item.getName() + '\n' + item.getPrice() + '€');
-            button.wrapTextProperty().setValue(true);
-            button.setTextAlignment(TextAlignment.CENTER);
-            button.setPrefSize(ITEM_BUTTON_WIDTH, ITEM_BUTTON_HEIGHT);
-            button.setBackground(
-                    new Background(
-                            new BackgroundFill(Color.web(COLOR_DARK),
-                                    CornerRadii.EMPTY,
-                                    Insets.EMPTY)));
-            button.setTextFill(Paint.valueOf(COLOR_WHITE));
-            button.setFont(Font.font(18));
-            button.setId(String.valueOf(item.getId()));
-            button.setCursor(Cursor.HAND);
-            button.setOnMouseClicked(event ->
-                    addItemToOrders(event));
-            button.setOnMouseEntered(event ->
+            Button editButton = setEditButton(item);
+            Button addButton = setAddButton(item);
+            addButton.setOnMouseEntered(event ->
             {
-                setButtonBackgroundLight(button);
+                setButtonBackgroundLight(addButton);
                 setButtonBackgroundLight(editButton);
             });
-            button.setOnMouseExited(event ->
+            addButton.setOnMouseExited(event ->
             {
-                setButtonBackgroundDark(button);
+                setButtonBackgroundDark(addButton);
                 setButtonBackgroundDark(editButton);
             });
-            button.setOnMousePressed(event ->
-                    button.setBackground(
-                            new Background(
-                                    new BackgroundFill(Color.web(COLOR_LIGHT_GRAY),
-                                            CornerRadii.EMPTY,
-                                            Insets.EMPTY))));
-            vbox.getChildren().addAll(editButton, button);
+            vbox.getChildren().addAll(editButton, addButton);
             vbox.setMargin(editButton, new Insets(0, 0, 0, 10));
-            vbox.setMargin(button, new Insets(0, 0, 10, 10));
+            vbox.setMargin(addButton, new Insets(0, 0, 10, 10));
             flowPane.getChildren().addAll(vbox);
         }
 

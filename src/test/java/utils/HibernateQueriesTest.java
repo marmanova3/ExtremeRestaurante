@@ -111,7 +111,7 @@ public class HibernateQueriesTest {
     public void tableShouldHaveOneRow() {
         TablesEntity table = HibernateQueries.getTableById(1);
 
-        HibernateQueries.addItemToTableOrders(1, table);
+        HibernateQueries.addItemToTableOrders(1, table, false);
 
         assertEquals("1", TestHelper.getNumberOfOrdersForTable(table));
     }

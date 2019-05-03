@@ -5,18 +5,17 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
@@ -63,6 +62,8 @@ public class ChooseItemsController extends AbstractController implements Initial
     private FlowPane flowPane;
     @FXML
     private Button drinks, mainCourse, soups, desserts, pasta, pizza, sideDishes;
+    @FXML
+    private CheckBox checkbox;
 
     public void initialize(URL location, ResourceBundle resources) {
         setDefaultCategory();
@@ -129,7 +130,8 @@ public class ChooseItemsController extends AbstractController implements Initial
     private void addItemToOrders(MouseEvent event) {
         String clickedItemIdAsString = ((Button) event.getSource()).getId();
         Integer itemId = Integer.parseInt(clickedItemIdAsString);
-        HibernateQueries.addItemToTableOrders(itemId, table);
+        HibernateQueries.addItemToTableOrders(itemId, table, checkbox.isSelected());
+        checkbox.setSelected(false);
     }
 
     @FXML
@@ -201,8 +203,8 @@ public class ChooseItemsController extends AbstractController implements Initial
     private void setItemsButtons() {
         flowPane.getChildren().clear();
 
-
         for (ItemsEntity item : menuItems) {
+            VBox vbox = new VBox();
             // Edit
             ImageView editIcon = new ImageView("windows/assets/edit.png");
             editIcon.setFitHeight(20);
@@ -211,16 +213,13 @@ public class ChooseItemsController extends AbstractController implements Initial
             editButton.setCursor(Cursor.HAND);
             editButton.setPrefSize(ITEM_BUTTON_WIDTH, ITEM_BUTTON_HEIGHT / 5);
             editButton.setContentDisplay(ContentDisplay.RIGHT);
+            editButton.setAlignment(Pos.TOP_RIGHT);
             setButtonBackgroundDark(editButton);
             editButton.setId(String.valueOf(item.getId()));
             editButton.setOnMouseClicked(event -> editItem(event));
-            // ADD
-            Button button = new Button(
-                    item.getName() + '\n' + item.getPrice() + '€',
-                    editButton
-            );
-            button.setContentDisplay(ContentDisplay.TOP);
 
+            // ADD
+            Button button = new Button(item.getName() + '\n' + item.getPrice() + '€');
             button.wrapTextProperty().setValue(true);
             button.setTextAlignment(TextAlignment.CENTER);
             button.setPrefSize(ITEM_BUTTON_WIDTH, ITEM_BUTTON_HEIGHT);
@@ -251,8 +250,10 @@ public class ChooseItemsController extends AbstractController implements Initial
                                     new BackgroundFill(Color.web(COLOR_LIGHT_GRAY),
                                             CornerRadii.EMPTY,
                                             Insets.EMPTY))));
-            flowPane.setMargin(button, new Insets(0, 0, 10, 10));
-            flowPane.getChildren().addAll(button);
+            vbox.getChildren().addAll(editButton, button);
+            vbox.setMargin(editButton, new Insets(0, 0, 0, 10));
+            vbox.setMargin(button, new Insets(0, 0, 10, 10));
+            flowPane.getChildren().addAll(vbox);
         }
 
     }

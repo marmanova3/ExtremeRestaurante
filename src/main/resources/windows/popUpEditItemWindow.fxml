@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity"
+      minHeight="-Infinity" minWidth="-Infinity"
+      style="-fx-background-color: #333333; -fx-border-color: #e1901e; -fx-border-width: 5;"
+      xmlns="http://javafx.com/javafx/8.0.171" fx:controller="controller.PopUpController">
+    <children>
+        <HBox alignment="CENTER" prefHeight="40.0" prefWidth="372.0" style="-fx-background-color: #000;">
+            <children>
+                <Label layoutX="165.0" layoutY="20.0" text="Edit item" textFill="WHITE">
+                    <font>
+                        <Font size="24.0"/>
+                    </font>
+                </Label>
+            </children>
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </padding>
+            <VBox.margin>
+                <Insets bottom="5.0"/>
+            </VBox.margin>
+        </HBox>
+        <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="376.0">
+            <children>
+                <Label prefHeight="21.0" prefWidth="215.0" text="Food name" textFill="WHITE"/>
+                <TextField fx:id="foodNameEditInput" alignment="CENTER_RIGHT" prefHeight="31.0" prefWidth="257.0">
+                    <HBox.margin>
+                        <Insets/>
+                    </HBox.margin>
+                </TextField>
+            </children>
+            <VBox.margin>
+                <Insets bottom="5.0"/>
+            </VBox.margin>
+        </HBox>
+        <HBox alignment="CENTER_LEFT">
+            <children>
+                <Label prefHeight="21.0" prefWidth="234.0" text="Price" textFill="WHITE">
+                    <HBox.margin>
+                        <Insets/>
+                    </HBox.margin>
+                </Label>
+                <TextField fx:id="priceEditItemInput" alignment="TOP_RIGHT" prefHeight="31.0" prefWidth="133.0"
+                           text="0">
+                    <HBox.margin>
+                        <Insets/>
+                    </HBox.margin>
+                </TextField>
+                <Label fx:id="outlay11" alignment="CENTER_RIGHT" prefHeight="21.0" prefWidth="2.0" text="€"
+                       textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="15.0"/>
+                    </font>
+                    <HBox.margin>
+                        <Insets left="5.0"/>
+                    </HBox.margin>
+                </Label>
+            </children>
+            <VBox.margin>
+                <Insets bottom="8.0"/>
+            </VBox.margin>
+        </HBox>
+        <HBox alignment="CENTER_LEFT">
+            <children>
+                <Button fx:id="saveNewItemBtn" mnemonicParsing="false" onMouseClicked="#confirm" prefHeight="40.0"
+                        prefWidth="100.0" style="-fx-background-color: #288e28;" text="Save">
+                    <HBox.margin>
+                        <Insets/>
+                    </HBox.margin>
+                </Button>
+                <Button fx:id="deleteItemBtn" mnemonicParsing="false" onMouseClicked="#confirm" prefHeight="40.0"
+                        prefWidth="100.0" style="-fx-background-color: #9b1d20;" text="Delete">
+                    <HBox.margin>
+                        <Insets left="10.0"/>
+                    </HBox.margin>
+                </Button>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="cancelEditItemBtn" alignment="CENTER" layoutX="102.0" layoutY="10.0"
+                        mnemonicParsing="false" onMouseClicked="#closeWindow" prefHeight="40.0" prefWidth="100.0"
+                        style="-fx-background-color: #e1901e;" text="Cancel" textAlignment="CENTER">
+                    <HBox.margin>
+                        <Insets/>
+                    </HBox.margin>
+                </Button>
+            </children>
+        </HBox>
+    </children>
+    <padding>
+        <Insets bottom="30.0" left="30.0" right="30.0" top="30.0"/>
+    </padding>
+</VBox>

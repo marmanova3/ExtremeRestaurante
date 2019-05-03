@@ -2,9 +2,12 @@ package controller;
 
 import app.Scenes;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
@@ -18,6 +21,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import model.ItemsEntity;
 import model.TablesEntity;
 import utils.HibernateQueries;
@@ -135,6 +140,7 @@ public class ChooseItemsController extends AbstractController implements Initial
 
     @FXML
     private void addNewItem(MouseEvent event) {
+        showPopupNewItemWindow();
     }
 
     private void setDefaultCategory() {
@@ -250,4 +256,17 @@ public class ChooseItemsController extends AbstractController implements Initial
         }
 
     }
+
+    private void showPopupNewItemWindow() {
+        FXMLLoader loader = getSceneLoader(Scenes.POP_UP_NEW_ITEM_WINDOW);
+        Parent root = getParent(loader);
+        PopUpNewItemController popUpNewItemController = loader.getController();
+        Scene scene = new Scene(root);
+        Stage popupStage = createPopUpStage();
+        popUpNewItemController.setStage(popupStage);
+        popupStage.initModality(Modality.WINDOW_MODAL);
+        popupStage.setScene(scene);
+        popupStage.showAndWait();
+    }
+
 }

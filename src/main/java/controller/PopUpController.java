@@ -197,4 +197,6 @@ public class PopUpController extends AbstractController {
         HibernateQueries.payOrders(orders);
         HibernateQueries.updateCurrentStateOfCashRegister(priceToPay);
     }
+
+
 }

@@ -55,7 +55,7 @@ public class ItemsEntity {
     }
 
     @Basic
-    @Column(name = "image", nullable = true, length = 100)
+    @Column(name = "image", length = 100)
     public String getImage() {
         return image;
     }
@@ -65,7 +65,7 @@ public class ItemsEntity {
     }
 
     @Basic
-    @Column(name = "soft_delete", nullable = true)
+    @Column(name = "soft_delete")
     public Boolean getSoftDelete() {
         return softDelete;
     }
@@ -74,7 +74,7 @@ public class ItemsEntity {
         this.softDelete = softDelete;
     }
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     public CategoriesEntity getCategory() {
         return this.category;
     }

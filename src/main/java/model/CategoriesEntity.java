@@ -48,4 +48,9 @@ public class CategoriesEntity {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
     }
+
+    public String toString() {
+        return this.name;
+    }
+
 }

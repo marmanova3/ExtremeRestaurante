@@ -45,8 +45,8 @@ public class HibernateQueries {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
-        Query qry = session.createQuery(""+
-                "SELECT t.id, t.name FROM OrdersEntity as o LEFT JOIN TablesEntity as t on o.table.id = t.id "+
+        Query qry = session.createQuery("" +
+                "SELECT t.id, t.name FROM OrdersEntity as o LEFT JOIN TablesEntity as t on o.table.id = t.id " +
                 "GROUP BY t.id " +
                 "HAVING bool_and(o.paid) = false");
 
@@ -80,6 +80,7 @@ public class HibernateQueries {
             ItemsEntity item = new ItemsEntity();
             item.setId((int) object[0]);
             item.setName(object[1].toString());
+            item.setSoftDelete(false);
             item.setPrice((double) object[2]);
             CategoriesEntity category = (CategoriesEntity) object[3];
             item.setCategory(category);
@@ -119,7 +120,7 @@ public class HibernateQueries {
         session.close();
     }
 
-    public static void payOrders(List<OrdersEntity> orders){
+    public static void payOrders(List<OrdersEntity> orders) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
@@ -169,7 +170,7 @@ public class HibernateQueries {
         return orderItemEntities;
     }
 
-    public static void updateOrderByQuantity(OrderItemEntity orderItemEntity){
+    public static void updateOrderByQuantity(OrderItemEntity orderItemEntity) {
         final Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
@@ -262,4 +263,47 @@ public class HibernateQueries {
         session.getTransaction().commit();
         session.close();
     }
+
+    public static void softDeleteItemById(int itemId) {
+        final Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        ItemsEntity item = session.load(ItemsEntity.class, itemId);
+        item.setSoftDelete(true);
+        session.save(item);
+
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    public static ObservableList<CategoriesEntity> getCategories() {
+
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        Query query = session.createQuery("from CategoriesEntity order by id");
+
+        ObservableList<CategoriesEntity> categoriesEntities = FXCollections.observableArrayList(query.list());
+        session.getTransaction().commit();
+        session.close();
+
+        return categoriesEntities;
+    }
+
+    public static void insertNewitem(String name, Double price, CategoriesEntity categoriesEntity) {
+        final Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        ItemsEntity itemsEntity = new ItemsEntity();
+        itemsEntity.setName(name);
+        itemsEntity.setPrice(price);
+        itemsEntity.setCategory(categoriesEntity);
+        itemsEntity.setSoftDelete(false);
+
+        session.save(itemsEntity);
+
+        session.getTransaction().commit();
+        session.close();
+    }
+
 }

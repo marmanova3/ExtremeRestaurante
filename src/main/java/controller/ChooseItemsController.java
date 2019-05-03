@@ -269,4 +269,17 @@ public class ChooseItemsController extends AbstractController implements Initial
         popupStage.showAndWait();
     }
 
+    private void showPopupEditItemWindow(int id) {
+        FXMLLoader loader = getSceneLoader(Scenes.POP_UP_EDIT_ITEM_WINDOW);
+        Parent root = getParent(loader);
+        PopUpEditItemController popUpEditItemController = loader.getController();
+        //tu treba pridat veci ktore si do stage chces poslat - mozno aj celu itemEntity
+        Scene scene = new Scene(root);
+        Stage popupStage = createPopUpStage();
+        popUpEditItemController.setStage(popupStage);
+        popupStage.initModality(Modality.WINDOW_MODAL);
+        popupStage.setScene(scene);
+        popupStage.showAndWait();
+    }
+
 }

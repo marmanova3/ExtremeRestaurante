@@ -1,11 +1,10 @@
 package controller;
 
+import app.Scenes;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import model.ItemsEntity;
 import utils.HibernateQueries;
 import utils.NumberUtils;
 
@@ -44,6 +43,7 @@ public class PopUpEditItemController extends AbstractController {
         Double price = Double.parseDouble(priceEditItemInput.getText());
 
         HibernateQueries.updateEntityItem(itemId, foodName, price);
+        reload();
         closeStage();
 
     }
@@ -51,6 +51,7 @@ public class PopUpEditItemController extends AbstractController {
     @FXML
     public void deleteItem() {
         HibernateQueries.softDeleteItemById(itemId);
+        reload();
         closeStage();
     }
 
@@ -78,6 +79,10 @@ public class PopUpEditItemController extends AbstractController {
     private void setErrorMessage(String message) {
         editItemErrorMessage.setText(message);
         editItemErrorMessage.setVisible(true);
+    }
+
+    private void reload() {
+        redirect(Scenes.CHOOSE_ITEMS_WINDOW);
     }
 
 }

@@ -1,5 +1,6 @@
 package controller;
 
+import app.Scenes;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -44,6 +45,7 @@ public class PopUpNewItemController extends AbstractController {
         Double price = Double.parseDouble(priceNewItemInput.getText());
         CategoriesEntity selectedCategory = (CategoriesEntity) categorySelect.getSelectionModel().getSelectedItem();
         HibernateQueries.insertNewitem(foodName, price, selectedCategory);
+        reload();
         closeStage();
     }
 
@@ -71,6 +73,10 @@ public class PopUpNewItemController extends AbstractController {
     private void setErrorMessage(String message) {
         newItemErrorMessage.setText(message);
         newItemErrorMessage.setVisible(true);
+    }
+
+    private void reload() {
+        redirect(Scenes.CHOOSE_ITEMS_WINDOW);
     }
 
 }

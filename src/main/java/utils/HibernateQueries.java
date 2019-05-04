@@ -72,28 +72,14 @@ public class HibernateQueries {
     }
 
     public static List<ItemsEntity> getItemsByCategoryId(int categoryId) {
-        List<ItemsEntity> items = new ArrayList<>();
-
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
-        Query query = session.createQuery("from ItemsEntity where category =: categoryId and softDelete=false");
-        query.setParameter("categoryId", categoryId);
+        CategoriesEntity category = session.load(CategoriesEntity.class, categoryId);
+        Query query = session.createQuery("from ItemsEntity where softDelete=false and category =: category order by name");
+        query.setParameter("category", category);
 
-        Iterator iterator = query.list().iterator();
-
-        while (iterator.hasNext()) {
-            Object[] object = (Object[]) iterator.next();
-            ItemsEntity item = new ItemsEntity();
-            item.setId((int) object[0]);
-            item.setName(object[1].toString());
-            item.setSoftDelete(false);
-            item.setPrice((double) object[2]);
-            CategoriesEntity category = (CategoriesEntity) object[3];
-            item.setCategory(category);
-            items.add(item);
-        }
-
+        List<ItemsEntity> items = query.list();
         session.getTransaction().commit();
         session.close();
 

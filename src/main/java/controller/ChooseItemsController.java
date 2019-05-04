@@ -136,12 +136,13 @@ public class ChooseItemsController extends AbstractController implements Initial
 
     @FXML
     private void editItem(MouseEvent event) {
-        String clickedItemIdAsString = ((Button) event.getSource()).getId();
-        System.out.println(clickedItemIdAsString);
+        int id = Integer.parseInt(((Button) event.getSource()).getId());
+        ItemsEntity item = HibernateQueries.getItemById(id);
+        showPopupEditItemWindow(item);
     }
 
     @FXML
-    private void addNewItem(MouseEvent event) {
+    private void addNewItem() {
         showPopupNewItemWindow();
     }
 
@@ -276,14 +277,20 @@ public class ChooseItemsController extends AbstractController implements Initial
         popupStage.showAndWait();
     }
 
-    private void showPopupEditItemWindow(int id) {
+    private void showPopupEditItemWindow(ItemsEntity item) {
         FXMLLoader loader = getSceneLoader(Scenes.POP_UP_EDIT_ITEM_WINDOW);
         Parent root = getParent(loader);
+
         PopUpEditItemController popUpEditItemController = loader.getController();
-        //tu treba pridat veci ktore si do stage chces poslat - mozno aj celu itemEntity
+
         Scene scene = new Scene(root);
         Stage popupStage = createPopUpStage();
         popUpEditItemController.setStage(popupStage);
+
+        popUpEditItemController.setId(item.getId());
+        popUpEditItemController.setNameText(item.getName());
+        popUpEditItemController.setPrice(item.getPrice());
+
         popupStage.initModality(Modality.WINDOW_MODAL);
         popupStage.setScene(scene);
         popupStage.showAndWait();

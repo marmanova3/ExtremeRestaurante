@@ -5,6 +5,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import model.ItemsEntity;
+import utils.HibernateQueries;
 import utils.NumberUtils;
 
 import java.net.URL;
@@ -20,15 +22,15 @@ public class PopUpEditItemController extends AbstractController {
     public TextField priceEditItemInput;
     @FXML
     public Label editItemErrorMessage;
+
     private Stage stage;
+    private int itemId;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        //nacitaj do inputov texty a idcko itemy
-    }
+    public void initialize(URL location, ResourceBundle resources) { }
 
     @FXML
-    public void saveEditedItem(MouseEvent mouseEvent) {
+    public void saveEditedItem() {
         if ("".equals(foodNameEditInput.getText())) {
             setErrorMessage(EMPTY_NAME);
             return;
@@ -41,26 +43,31 @@ public class PopUpEditItemController extends AbstractController {
         String foodName = foodNameEditInput.getText();
         Double price = Double.parseDouble(priceEditItemInput.getText());
 
-        //updateItem
+        HibernateQueries.updateEntityItem(itemId, foodName, price);
         closeStage();
 
     }
 
     @FXML
-    public void deleteItem(MouseEvent mouseEvent) {
-        //tu treba id
-        //HibernateQueries.softDeleteItemById();
+    public void deleteItem() {
+        HibernateQueries.softDeleteItemById(itemId);
         closeStage();
     }
 
     @FXML
-    public void closeWindow(MouseEvent mouseEvent) {
+    public void closeWindow() {
         closeStage();
     }
 
     public void setStage(Stage stage) {
         this.stage = stage;
     }
+
+    public void setId(int id) { this.itemId = id; }
+
+    public void setNameText(String name) { foodNameEditInput.setText(name); }
+
+    public  void setPrice(Double price) { priceEditItemInput.setText(price.toString()); }
 
     private void closeStage() {
         if (this.stage != null) {

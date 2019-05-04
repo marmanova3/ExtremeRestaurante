@@ -19,6 +19,13 @@ public class HibernateQueries {
         return order;
     }
 
+    public static ItemsEntity getItemById(int itemId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        ItemsEntity item = session.load(ItemsEntity.class, itemId);
+        session.close();
+        return item;
+    }
+
     public static TablesEntity getTableById(int tableId) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         TablesEntity table = session.load(TablesEntity.class, tableId);
@@ -70,7 +77,7 @@ public class HibernateQueries {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
-        Query query = session.createQuery("select id, name, price, category from ItemsEntity where category =: categoryId");
+        Query query = session.createQuery("from ItemsEntity where category =: categoryId and softDelete=false");
         query.setParameter("categoryId", categoryId);
 
         Iterator iterator = query.list().iterator();
@@ -265,12 +272,26 @@ public class HibernateQueries {
         session.close();
     }
 
+    public static void updateEntityItem(int id, String name, Double price) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        ItemsEntity item = session.get(ItemsEntity.class, id);
+        item.setName(name);
+        item.setPrice(price);
+        session.update(item);
+        session.save(item);
+        session.getTransaction().commit();
+        session.close();
+
+    }
+
     public static void softDeleteItemById(int itemId) {
         final Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
         ItemsEntity item = session.load(ItemsEntity.class, itemId);
         item.setSoftDelete(true);
+        session.update(item);
         session.save(item);
 
         session.getTransaction().commit();
